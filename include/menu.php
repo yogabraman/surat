@@ -10,7 +10,7 @@ if (!empty($_SESSION['admin'])) {
 
             <!-- Menu on large screen START -->
             <ul class="center hide-on-med-and-down" id="nv">
-                <li><a href="./" class="ams hide-on-med-and-down"><img class="logo1" src="./asset/img/jateng.png" /> DISDIK</a></li>
+                <li><a href="./" class="ams hide-on-med-and-down"><img class="logo1" src="./asset/img/jateng.png" /> Dispermadesdukcapil</a></li>
                 <li>
                     <div class="grs">
                         </>

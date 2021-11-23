@@ -18,11 +18,11 @@ if (!empty($_SESSION['admin'])) {
             <div class="container" id="footer">
 
                 <span class="white-text">&copy; <?php echo date("Y"); ?>
-                    DISPERMADESDUKCAPIL &nbsp;|&nbsp; By Sara Tsani Andanikita
+                    DISPERMADESDUKCAPIL &nbsp;|&nbsp; 
                 </span>
                 <div class="right hide-on-small-only">
-                    <i class="material-icons md-12">public</i> www.disdik.semarangkota.go.id &nbsp;&nbsp;
-                    <i class="material-icons">mail_outline</i> info@disdik.semarangkota.go.id
+                    <!-- <i class="material-icons md-12">public</i> www.disdik.semarangkota.go.id &nbsp;&nbsp;
+                    <i class="material-icons">mail_outline</i> info@disdik.semarangkota.go.id -->
                 </div>
             </div>
         </div>
