@@ -173,8 +173,9 @@
                             if(mysqli_num_rows($query) > 0){
                                 $no = 1;
                                 while($row = mysqli_fetch_array($query)){
+                                    // <td>'.$row['no_agenda'].'<br/><hr/>'.$row['kode'].'</td>
                                   echo '
-                                    <td>'.$row['no_agenda'].'<br/><hr/>'.$row['kode'].'</td>
+                                    <td>'.$row['no_agenda'].'</td>
                                     <td>'.substr($row['isi'],0,200).'<br/><br/><strong>File :</strong>';
 
                                     if(!empty($row['file'])){
@@ -287,13 +288,14 @@
                     } else {
 
                         //Tampilan Awal Surat Masuk
+                        // <th width="10%">No. Agenda<br/>Kode</th>
                         echo '
                         
                         <div class="col m12" id="colres">
                             <table class="bordered" id="tbl">
                                 <thead class="blue lighten-4" id="head">
                                     <tr>
-                                        <th width="10%">No. Agenda<br/>Kode</th>
+                                        <th width="10%">No. Agenda</th>
                                         <th width="30%">Isi Ringkas<br/> File</th>
                                         <th width="24%">Asal Surat</th>
                                         <th width="18%">No. Surat<br/>Tgl Surat</th>
@@ -353,8 +355,9 @@
                                 if(mysqli_num_rows($query) > 0){
                                     $no = 1;
                                     while($row = mysqli_fetch_array($query)){
+                                        // <td>'.$row['no_agenda'].'<br/><hr/>'.$row['kode'].'</td>
                                       echo '
-                                        <td>'.$row['no_agenda'].'<br/><hr/>'.$row['kode'].'</td>
+                                        <td>'.$row['no_agenda'].'</td>
                                         <td>'.substr($row['isi'],0,200).'<br/><br/><strong>File :</strong>';
 
                                         if(!empty($row['file'])){

@@ -10,9 +10,13 @@ if (empty($_SESSION['admin'])) {
 
         //validasi form kosong
         if (
-            $_REQUEST['no_agenda'] == "" || $_REQUEST['no_surat'] == "" || $_REQUEST['asal_surat'] == "" || $_REQUEST['isi'] == ""
-            // || $_REQUEST['kode'] == "" 
-            || $_REQUEST['tgl_surat'] == ""  || $_REQUEST['keterangan'] == ""
+            $_REQUEST['no_agenda'] == "" || 
+            $_REQUEST['no_surat'] == "" || 
+            $_REQUEST['asal_surat'] == "" || 
+            $_REQUEST['isi'] == "" || 
+            // $_REQUEST['kode'] == "" || 
+            $_REQUEST['tgl_surat'] == "" || 
+            $_REQUEST['keterangan'] == ""
         ) {
             $_SESSION['errEmpty'] = 'ERROR! Semua form wajib diisi';
             echo '<script language="javascript">window.history.back();</script>';
