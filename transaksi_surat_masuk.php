@@ -161,8 +161,9 @@
                                     <th width="10%">No. Agenda<br/>Kode</th>
                                     <th width="30%">Isi Ringkas<br/> File</th>
                                     <th width="24%">Asal Surat</th>
-                                    <th width="18%">No. Surat<br/>Tgl Surat</th>
-                                    <th width="18%">Tindakan <span class="right"><i class="material-icons" style="color: #333;">settings</i></span></th>
+                                    <th width="14%">No. Surat<br/>Tgl Surat</th>
+                                    <th width="8%">Dispo/th>
+                                    <th width="14%">Tindakan <span class="right"><i class="material-icons" style="color: #333;">settings</i></span></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -217,6 +218,7 @@
                                     echo '
 
                                     <td>'.$row['no_surat'].'<br/><hr/>'.$d." ".$nm." ".$y.'</td>
+                                    <td>'.$row['status_dispo'].'</td>
                                     <td>';
 
                                     if($_SESSION['admin'] != $row['id_user'] AND $_SESSION['admin'] != 1){
@@ -242,7 +244,7 @@
                     </div>
                     <!-- Row form END -->';
 
-                    $query = mysqli_query($config, "SELECT * FROM tbl_surat_masuk");
+                    $query = mysqli_query($config, "SELECT * FROM tbl_surat_masuk ");
                     $cdata = mysqli_num_rows($query);
                     $cpg = ceil($cdata/$limit);
 
@@ -298,8 +300,9 @@
                                         <th width="10%">No. Agenda</th>
                                         <th width="30%">Isi Ringkas<br/> File</th>
                                         <th width="24%">Asal Surat</th>
-                                        <th width="18%">No. Surat<br/>Tgl Surat</th>
-                                        <th width="18%">Tindakan <span class="right tooltipped" data-position="left" data-tooltip="Atur jumlah data yang ditampilkan"><a class="modal-trigger" href="#modal"><i class="material-icons" style="color: #333;">settings</i></a></span></th>
+                                        <th width="14%">No. Surat<br/>Tgl Surat</th>
+                                        <th width="8%">Disposisi</th>
+                                        <th width="14%">Tindakan <span class="right tooltipped" data-position="left" data-tooltip="Atur jumlah data yang ditampilkan"><a class="modal-trigger" href="#modal"><i class="material-icons" style="color: #333;">settings</i></a></span></th>
 
                                         <div id="modal" class="modal">
                                         <div class="modal-content white">
@@ -351,7 +354,8 @@
                                     <tr>';
 
                                 //script untuk menampilkan data
-                                $query = mysqli_query($config, "SELECT * FROM tbl_surat_masuk ORDER by id_surat DESC LIMIT $curr, $limit");
+                                // $query = mysqli_query($config, "SELECT * FROM tbl_surat_masuk ORDER by id_surat DESC LIMIT $curr, $limit");
+                                $query = mysqli_query($config, "SELECT * FROM tbl_surat_masuk ORDER by status_dispo ASC LIMIT $curr, $limit");
                                 if(mysqli_num_rows($query) > 0){
                                     $no = 1;
                                     while($row = mysqli_fetch_array($query)){
@@ -396,9 +400,11 @@
                                         } elseif($m == "12"){
                                             $nm = "Desember";
                                         }
+                                        $stat = ($row['status_dispo']==0) ? 'belum' : 'sudah';
                                         echo '
 
                                         <td>'.$row['no_surat'].'<br/><hr/>'.$d." ".$nm." ".$y.'</td>
+                                        <td>'.$stat.'</td>
                                         <td>';
 
                                         if($_SESSION['admin'] != $row['id_user'] AND $_SESSION['admin'] != 1){
