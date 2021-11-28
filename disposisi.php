@@ -137,7 +137,7 @@
                                                 <th width="6%">No</th>
                                                 <th width="22%">Tujuan Disposisi</th>
                                                 <th width="32%">Isi Disposisi</th>
-                                                <th width="24%">Sifat<br/>Batas Waktu</th>
+                                                <th width="24%">Sifat<br/>Tanggal Disposisi</th>
                                                 <th width="16%">Tindakan</th>
                                             </tr>
                                         </thead>
@@ -155,9 +155,9 @@
                                                     <td>'.$row['tujuan'].'</td>
                                                     <td>'.$row['isi_disposisi'].'</td>';
 
-                                                    $y = substr($row['batas_waktu'],0,4);
-                                                    $m = substr($row['batas_waktu'],5,2);
-                                                    $d = substr($row['batas_waktu'],8,2);
+                                                    $y = substr($row['tgl_dispo'],0,4);
+                                                    $m = substr($row['tgl_dispo'],5,2);
+                                                    $d = substr($row['tgl_dispo'],8,2);
 
                                                     if($m == "01"){
                                                         $nm = "Januari";

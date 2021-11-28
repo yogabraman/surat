@@ -13,8 +13,12 @@
             list($id_surat) = mysqli_fetch_array($query);
 
             //validasi form kosong
-            if($_REQUEST['tujuan'] == "" || $_REQUEST['isi_disposisi'] == "" || $_REQUEST['sifat'] == "" || $_REQUEST['batas_waktu'] == ""
-                || $_REQUEST['catatan'] == ""){
+            if(
+                $_REQUEST['tujuan'] == "" || 
+                $_REQUEST['isi_disposisi'] == "" || 
+                $_REQUEST['sifat'] == "" || 
+                $_REQUEST['tgl_dispo'] == ""|| 
+                $_REQUEST['catatan'] == ""){
                 $_SESSION['errEmpty'] = 'ERROR! Semua form wajib diisi';
                 echo '<script language="javascript">window.history.back();</script>';
             } else {
@@ -23,7 +27,7 @@
                 $tujuan = $_REQUEST['tujuan'];
                 $isi_disposisi = $_REQUEST['isi_disposisi'];
                 $sifat = $_REQUEST['sifat'];
-                $batas_waktu = $_REQUEST['batas_waktu'];
+                $tgl_dispo = $_REQUEST['tgl_dispo'];
                 $catatan = $_REQUEST['catatan'];
                 $id_user = $_SESSION['id_user'];
 
@@ -38,8 +42,8 @@
                         echo '<script language="javascript">window.history.back();</script>';
                     } else {
 
-                        if(!preg_match("/^[0-9 -]*$/", $batas_waktu)){
-                            $_SESSION['batas_waktu'] = 'Form Batas Waktu hanya boleh mengandung karakter huruf dan minus(-)';
+                        if(!preg_match("/^[0-9 -]*$/", $tgl_dispo)){
+                            $_SESSION['tgl_dispo'] = 'Form Tanggal Disposisi hanya boleh mengandung karakter huruf dan minus(-)';
                             echo '<script language="javascript">window.history.back();</script>';
                         } else {
 
@@ -53,7 +57,7 @@
                                     echo '<script language="javascript">window.history.back();</script>';
                                 } else {
 
-                                    $query = mysqli_query($config, "UPDATE tbl_disposisi SET tujuan='$tujuan', isi_disposisi='$isi_disposisi', sifat='$sifat', batas_waktu='$batas_waktu', catatan='$catatan', id_surat='$id_surat', id_user='$id_user' WHERE id_disposisi='$id_disposisi'");
+                                    $query = mysqli_query($config, "UPDATE tbl_disposisi SET tujuan='$tujuan', isi_disposisi='$isi_disposisi', sifat='$sifat', tgl_dispo='$tgl_dispo', catatan='$catatan', id_surat='$id_surat', id_user='$id_user' WHERE id_disposisi='$id_disposisi'");
 
                                     if($query == true){
                                         $_SESSION['succEdit'] = 'SUKSES! Data berhasil diupdate';
@@ -146,15 +150,15 @@
                             </div>
                             <div class="input-field col s6">
                                 <i class="material-icons prefix md-prefix">alarm</i>
-                                <input id="batas_waktu" type="text" name="batas_waktu" class="datepicker" value="<?php echo $row['batas_waktu']; ?>"required>
+                                <input id="tgl_dispo" type="text" name="tgl_dispo" class="datepicker" value="<?php echo $row['tgl_dispo']; ?>"required>
                                     <?php
-                                        if(isset($_SESSION['batas_waktu'])){
-                                            $batas_waktu = $_SESSION['batas_waktu'];
-                                            echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">'.$batas_waktu.'</div>';
-                                            unset($_SESSION['batas_waktu']);
+                                        if(isset($_SESSION['tgl_dispo'])){
+                                            $tgl_dispo = $_SESSION['tgl_dispo'];
+                                            echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">'.$tgl_dispo.'</div>';
+                                            unset($_SESSION['tgl_dispo']);
                                         }
                                     ?>
-                                <label for="batas_waktu">Batas Waktu</label>
+                                <label for="tgl_dispo">Tanggal Disposisipo</label>
                             </div>
                             <div class="input-field col s6">
                                 <i class="material-icons prefix md-prefix">description</i>

@@ -30,6 +30,10 @@ if (empty($_SESSION['admin'])) {
             // $nkode = trim($kode);
             $tgl_surat = $_REQUEST['tgl_surat'];
             $keterangan = $_REQUEST['keterangan'];
+            $tipe_surat = $_REQUEST['tipe_surat'];
+            $tgl_agenda = $_REQUEST['tgl_agenda'];
+            $waktu_agenda = $_REQUEST['waktu_agenda'];
+            $tempat = $_REQUEST['tempat'];
             $id_user = $_SESSION['id_user'];
 
             //validasi input data
@@ -67,7 +71,7 @@ if (empty($_SESSION['admin'])) {
                                     $_SESSION['keterangan'] = 'Form Keterangan hanya boleh mengandung karakter huruf, angka, spasi, titik(.), koma(,), minus(-), garis miring(/), dan kurung()';
                                     echo '<script language="javascript">window.history.back();</script>';
                                 } else {
-
+                                    //cek no surat agar tidak duplikat
                                     $cek = mysqli_query($config, "SELECT * FROM tbl_surat_masuk WHERE no_surat='$no_surat'");
                                     $result = mysqli_num_rows($cek);
 
@@ -86,7 +90,9 @@ if (empty($_SESSION['admin'])) {
                                         //jika form file tidak kosong akan mengeksekusi script dibawah ini
                                         if ($file != "") {
 
-                                            $rand = rand(1, 10000);
+                                            // $rand = rand(1, 10000);
+                                            date_default_timezone_set('Asia/Jakarta');
+                                            $rand = date("YmdHis");
                                             $nfile = $rand . "-" . $file;
 
                                             //validasi file
@@ -116,19 +122,46 @@ if (empty($_SESSION['admin'])) {
                                                 echo '<script language="javascript">window.history.back();</script>';
                                             }
                                         } else {
-
                                             //jika form file gambar kosong akan mengeksekusi script dibawah ini
-                                            $query = mysqli_query($config, "INSERT INTO tbl_surat_masuk(no_agenda,no_surat,asal_surat,isi,tgl_surat, tgl_diterima,file,keterangan,id_user)
-                                                            VALUES('$no_agenda','$no_surat','$asal_surat','$isi','$tgl_surat',NOW(),'','$keterangan','$id_user')");
+                                            
+                                            //jika surat biasa
+                                            $tipe_surat = $_POST['tipe_surat'];
+                                            if($tipe_surat==0){
+                                                $query = mysqli_query($config, "INSERT INTO tbl_surat_masuk(no_agenda,no_surat,asal_surat,isi,tgl_surat, tgl_diterima,file,keterangan,status_dispo,tipe_surat,id_user)
+                                                            VALUES('$no_agenda','$no_surat','$asal_surat','$isi','$tgl_surat',NOW(),'','$keterangan',0,$tipe_surat,'$id_user')");
 
-                                            if ($query == true) {
-                                                $_SESSION['succAdd'] = 'SUKSES! Data berhasil ditambahkan';
-                                                header("Location: ./admin.php?page=tsm");
-                                                die();
-                                            } else {
+                                                if ($query == true) {
+                                                    $_SESSION['succAdd'] = 'SUKSES! Data berhasil ditambahkan';
+                                                    header("Location: ./admin.php?page=tsm");
+                                                    die();
+                                                } else {
                                                 $_SESSION['errQ'] = 'ERROR! Ada masalah dengan query';
                                                 echo '<script language="javascript">window.history.back();</script>';
+                                                }
+
+                                            }else{
+                                                $query = mysqli_query($config, "INSERT INTO tbl_surat_masuk(no_agenda,no_surat,asal_surat,isi,tgl_surat, tgl_diterima,file,keterangan,status_dispo,tipe_surat,id_user)
+                                                            VALUES('$no_agenda','$no_surat','$asal_surat','$isi','$tgl_surat',NOW(),'','$keterangan',0,$tipe_surat,'$id_user')");
+
+                                                if ($query == true) {
+                                                    $last_id = mysqli_insert_id($config);
+                                                    $query_und = mysqli_query($config, "INSERT INTO tbl_agenda(asal,isi,tgl_agenda,waktu_agenda,tempat, id_surat, id_user)
+                                                            VALUES('$asal_surat','$isi','$tgl_agenda','$waktu_agenda','$tempat','$last_id','$id_user')");
+                                                    if($query_und==true){
+                                                        $_SESSION['succAdd'] = 'SUKSES! Data berhasil ditambahkan';
+                                                        header("Location: ./admin.php?page=tsm");
+                                                        die();
+                                                    }else{
+                                                        $_SESSION['errQ'] = 'ERROR! Ada masalah dengan query';
+                                                        echo '<script language="javascript">window.history.back();</script>';
+                                                    }
+                                                } 
+                                                else {
+                                                    $_SESSION['errQ'] = 'ERROR! Ada masalah dengan query';
+                                                    echo '<script language="javascript">window.history.back();</script>';
+                                                }
                                             }
+                                            
                                         }
                                     }
                                 }
@@ -197,27 +230,12 @@ if (empty($_SESSION['admin'])) {
                     <div class="input-field col s6">
                         <i class="material-icons prefix md-prefix">mail</i><label>Pilih Tipe Surat</label><br />
                         <div class="input-field col s11 right">
-                            <select class="browser-default jenis_surat" name="jenis_surat" id="jenis_surat" required>
-                                <option value="2">Surat Biasa</option>
-                                <option value="3">Undangan</option>
+                            <select class="browser-default tipe_surat" name="tipe_surat" id="tipe_surat" required>
+                                <option value="0">Surat Biasa</option>
+                                <option value="1">Undangan</option>
                             </select>
                         </div>
                     </div>
-
-                    <!-- <div class="input-field col s3">
-                        <i class="material-icons prefix md-prefix">looks_three</i>
-                        <?php 
-                            $query = mysqli_query($config, "SELECT * FROM tbl_struktural"); 
-                            if(mysqli_num_rows($query) > 0){
-                                while($row = mysqli_fetch_array($query)){
-                        ?>
-                        <input id="<?= $row['id_struk'] ?>" type="checkbox" class="validate" name="struktural" required>
-                        <label for="<?= $row['id_struk'] ?>"><?= $row['nama'] ?></label>
-                        <?php 
-                            }
-                        } 
-                        ?>
-                    </div> -->
                 </div>
                 <div class="row">
 
@@ -348,20 +366,20 @@ if (empty($_SESSION['admin'])) {
 
                     <div class="input-field col s6">
                         <i class="material-icons prefix md-prefix">date_range</i>
-                        <input id="tgl_acara" type="text" name="tgl_acara" class="datepicker" required>
+                        <input id="tgl_agenda" type="text" name="tgl_agenda" class="datepicker">
                         <?php
-                        if (isset($_SESSION['tgl_acara'])) {
-                            $tgl_acara = $_SESSION['tgl_acara'];
-                            echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">' . $tgl_acara . '</div>';
-                            unset($_SESSION['tgl_acara']);
+                        if (isset($_SESSION['tgl_agenda'])) {
+                            $tgl_agenda = $_SESSION['tgl_agenda'];
+                            echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">' . $tgl_agenda . '</div>';
+                            unset($_SESSION['tgl_agenda']);
                         }
                         ?>
-                        <label for="tgl_acara">Tanggal Acara</label>
+                        <label for="tgl_agenda">Tanggal Acara</label>
                     </div>
 
                     <div class="input-field col s6">
                         <i class="material-icons prefix md-prefix">place</i>
-                        <input id="tempat" type="text" class="validate" name="tempat" required>
+                        <input id="tempat" type="text" class="validate" name="tempat">
                         <?php
                         if (isset($_SESSION['tempat'])) {
                             $tempat = $_SESSION['tempat'];
@@ -374,9 +392,14 @@ if (empty($_SESSION['admin'])) {
 
                     <div class="input-field col s6">
                         <i class="material-icons prefix md-prefix">alarm</i>
-                            <input id="" type="time" name="validate" class="" required>
-                        <div class="input-field col s6">
-                        </div>
+                        <input id="waktu_agenda" type="time" name="waktu_agenda" class=""></input>
+                        <?php
+                        if (isset($_SESSION['waktu_agenda'])) {
+                            $waktu_agenda = $_SESSION['waktu_agenda'];
+                            echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">' . $waktu_agenda . '</div>';
+                            unset($_SESSION['waktu_agenda']);
+                        }
+                        ?>
                     </div>
 
                     </div>

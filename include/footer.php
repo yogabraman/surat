@@ -43,15 +43,15 @@ if (!empty($_SESSION['admin'])) {
 
             undangan.style.display = "none";
 
-            $('.jenis_surat').on('change', function(e) {
+            $('.tipe_surat').on('change', function(e) {
                 var id = $(this).val();
 
 
-                if (id == '2') {
+                if (id == '0') {
                     undangan.style.display = "none";
 
                 }
-                if (id == '3') {
+                if (id == '1') {
                     undangan.style.display = "block";
 
                 }
@@ -108,10 +108,10 @@ if (!empty($_SESSION['admin'])) {
         });
 
         //jquery radio button
-        $("#tipe_surat").prop("checked", true);
+        // $("#tipe_surat").prop("checked", true);
 
         //jquery datepicker
-        $('#tgl_surat,#tgl_acara,#batas_waktu,#dari_tanggal,#sampai_tanggal').pickadate({
+        $('#tgl_surat,#tgl_agenda,#batas_waktu,#dari_tanggal,#sampai_tanggal').pickadate({
             selectMonths: true,
             selectYears: 10,
             format: "yyyy-mm-dd"
