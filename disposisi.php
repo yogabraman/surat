@@ -136,6 +136,7 @@
                                             <tr>
                                                 <th width="6%">No</th>
                                                 <th width="22%">Tujuan Disposisi</th>
+                                                <th width="22%">Perintah Disposisi</th>
                                                 <th width="32%">Isi Disposisi</th>
                                                 <th width="24%">Sifat<br/>Tanggal Disposisi</th>
                                                 <th width="16%">Tindakan</th>
@@ -153,6 +154,7 @@
                                             $no++;
                                              echo ' <td>'.$no.'</td>
                                                     <td>'.$row['tujuan'].'</td>
+                                                    <td>'.$row['perintah'].'</td>
                                                     <td>'.$row['isi_disposisi'].'</td>';
 
                                                     $y = substr($row['tgl_dispo'],0,4);
