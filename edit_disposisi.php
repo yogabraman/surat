@@ -13,8 +13,12 @@
             list($id_surat) = mysqli_fetch_array($query);
 
             //validasi form kosong
-            if($_REQUEST['tujuan'] == "" || $_REQUEST['isi_disposisi'] == "" || $_REQUEST['sifat'] == "" || $_REQUEST['batas_waktu'] == ""
-                || $_REQUEST['catatan'] == ""){
+            if(
+                $_REQUEST['tujuan'] == "" || 
+                $_REQUEST['isi_disposisi'] == "" || 
+                $_REQUEST['sifat'] == "" || 
+                // $_REQUEST['tgl_dispo'] == ""|| 
+                $_REQUEST['catatan'] == ""){
                 $_SESSION['errEmpty'] = 'ERROR! Semua form wajib diisi';
                 echo '<script language="javascript">window.history.back();</script>';
             } else {
@@ -23,25 +27,25 @@
                 $tujuan = $_REQUEST['tujuan'];
                 $isi_disposisi = $_REQUEST['isi_disposisi'];
                 $sifat = $_REQUEST['sifat'];
-                $batas_waktu = $_REQUEST['batas_waktu'];
+                // $tgl_dispo = $_REQUEST['tgl_dispo'];
                 $catatan = $_REQUEST['catatan'];
                 $id_user = $_SESSION['id_user'];
 
                 //validasi input data
-                if(!preg_match("/^[a-zA-Z0-9.,()\/ -]*$/", $tujuan)){
-                    $_SESSION['tujuan'] = 'Form Tujuan Disposisi hanya boleh mengandung karakter huruf, angka, spasi, titik(.), koma(,) minus(-). kurung() dan garis miring(/)';
-                    echo '<script language="javascript">window.history.back();</script>';
-                } else {
+                // if(!preg_match("/^[a-zA-Z0-9.,()\/ -]*$/", $tujuan)){
+                //     $_SESSION['tujuan'] = 'Form Tujuan Disposisi hanya boleh mengandung karakter huruf, angka, spasi, titik(.), koma(,) minus(-). kurung() dan garis miring(/)';
+                //     echo '<script language="javascript">window.history.back();</script>';
+                // } else {
 
                     if(!preg_match("/^[a-zA-Z0-9.,_()%&@\/\r\n -]*$/", $isi_disposisi)){
                         $_SESSION['isi_disposisi'] = 'Form Isi Disposisi hanya boleh mengandung karakter huruf, angka, spasi, titik(.), koma(,), minus(-), garis miring(/), dan(&), underscore(_), kurung(), persen(%) dan at(@)';
                         echo '<script language="javascript">window.history.back();</script>';
                     } else {
 
-                        if(!preg_match("/^[0-9 -]*$/", $batas_waktu)){
-                            $_SESSION['batas_waktu'] = 'Form Batas Waktu hanya boleh mengandung karakter huruf dan minus(-)';
-                            echo '<script language="javascript">window.history.back();</script>';
-                        } else {
+                        // if(!preg_match("/^[0-9 -]*$/", $tgl_dispo)){
+                        //     $_SESSION['tgl_dispo'] = 'Form Tanggal Disposisi hanya boleh mengandung karakter huruf dan minus(-)';
+                        //     echo '<script language="javascript">window.history.back();</script>';
+                        // } else {
 
                             if(!preg_match("/^[a-zA-Z0-9.,()%@\/ -]*$/", $catatan)){
                                 $_SESSION['catatan'] = 'Form catatan hanya boleh mengandung karakter huruf, angka, spasi, titik(.), koma(,), minus(-) garis miring(/), dan kurung()';
@@ -53,7 +57,7 @@
                                     echo '<script language="javascript">window.history.back();</script>';
                                 } else {
 
-                                    $query = mysqli_query($config, "UPDATE tbl_disposisi SET tujuan='$tujuan', isi_disposisi='$isi_disposisi', sifat='$sifat', batas_waktu='$batas_waktu', catatan='$catatan', id_surat='$id_surat', id_user='$id_user' WHERE id_disposisi='$id_disposisi'");
+                                    $query = mysqli_query($config, "UPDATE tbl_disposisi SET tujuan='$tujuan', isi_disposisi='$isi_disposisi', sifat='$sifat', tgl_dispo=NOW(), catatan='$catatan', id_surat='$id_surat', id_user='$id_user' WHERE id_disposisi='$id_disposisi'");
 
                                     if($query == true){
                                         $_SESSION['succEdit'] = 'SUKSES! Data berhasil diupdate';
@@ -66,9 +70,9 @@
                                     }
                                 }
                             }
-                        }
+                        // }
                     }
-                }
+                // }
             }
         } else {
 
@@ -131,31 +135,33 @@
 
                         <!-- Row in form START -->
                         <div class="row">
+                            <input type="hidden" value="<?php echo $row['id_disposisi'] ;?>">
                             <div class="input-field col s6">
-                                <input type="hidden" value="<?php echo $row['id_disposisi'] ;?>">
-                                <i class="material-icons prefix md-prefix">account_box</i>
-                                <input id="tujuan" type="text" class="validate" name="tujuan" value="<?php echo $row['tujuan'] ;?>" required>
-                                    <?php
-                                        if(isset($_SESSION['tujuan'])){
-                                            $tujuan = $_SESSION['tujuan'];
-                                            echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">'.$tujuan.'</div>';
-                                            unset($_SESSION['tujuan']);
-                                        }
-                                    ?>
-                                <label for="tujuan">Tujuan Disposisi</label>
+                                <i class="material-icons prefix md-prefix">supervisor_account</i><label>Kepada Yth:</label><br/>
+                                <?php
+                                    $query = mysqli_query($config, "SELECT * FROM tbl_struktural");
+                                    if (mysqli_num_rows($query) > 0) {
+                                    while ($row = mysqli_fetch_array($query)) {
+                                ?>
+                                 <input id="struk_<?= $row['id_struk'] ?>" type="checkbox" class="validate" name="tujuan[]" value="<?= $row['nama'] ?>" >
+                                <label for="struk_<?= $row['id_struk'] ?>"><?= $row['nama'] ?></label>
+                                <?php
+                                    }
+                                }
+                                ?>
                             </div>
-                            <div class="input-field col s6">
+                            <!-- <div class="input-field col s6">
                                 <i class="material-icons prefix md-prefix">alarm</i>
-                                <input id="batas_waktu" type="text" name="batas_waktu" class="datepicker" value="<?php echo $row['batas_waktu']; ?>"required>
+                                <input id="tgl_dispo" type="text" name="tgl_dispo" class="datepicker" value="<?php echo $row['tgl_dispo']; ?>"required>
                                     <?php
-                                        if(isset($_SESSION['batas_waktu'])){
-                                            $batas_waktu = $_SESSION['batas_waktu'];
-                                            echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">'.$batas_waktu.'</div>';
-                                            unset($_SESSION['batas_waktu']);
+                                        if(isset($_SESSION['tgl_dispo'])){
+                                            $tgl_dispo = $_SESSION['tgl_dispo'];
+                                            echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">'.$tgl_dispo.'</div>';
+                                            unset($_SESSION['tgl_dispo']);
                                         }
                                     ?>
-                                <label for="batas_waktu">Batas Waktu</label>
-                            </div>
+                                <label for="tgl_dispo">Tanggal Disposisipo</label>
+                            </div> -->
                             <div class="input-field col s6">
                                 <i class="material-icons prefix md-prefix">description</i>
                                 <textarea id="isi_disposisi" class="materialize-textarea validate" name="isi_disposisi" required><?php echo $row['isi_disposisi'] ;?></textarea>

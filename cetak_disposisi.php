@@ -277,11 +277,47 @@
                             <tr>
                                 <td id="right"><strong>Nomor Pencatat Kendali</strong></td>
                                 <td id="left" colspan="2">: '.$row['no_agenda'].'</td>
-                            </tr>
+                            </tr>';
+                            $query3 = mysqli_query($config, "SELECT * FROM tbl_disposisi JOIN tbl_surat_masuk ON tbl_disposisi.id_surat = tbl_surat_masuk.id_surat WHERE tbl_disposisi.id_surat='$id_surat'");
+
+                            if(mysqli_num_rows($query3) > 0){
+                                $no = 0;
+                                $row = mysqli_fetch_array($query3);{
+                                    
+                                $y1 = substr($row['tgl_dispo'],0,4);
+                                $m1 = substr($row['tgl_dispo'],5,2);
+                                $d1 = substr($row['tgl_dispo'],8,2);
+
+                                if($m1 == "01"){
+                                    $nm1 = "Januari";
+                                } elseif($m1 == "02"){
+                                    $nm1 = "Februari";
+                                } elseif($m1 == "03"){
+                                    $nm1 = "Maret";
+                                } elseif($m1 == "04"){
+                                    $nm1 = "April";
+                                } elseif($m1 == "05"){
+                                    $nm1 = "Mei";
+                                } elseif($m1 == "06"){
+                                    $nm1 = "Juni";
+                                } elseif($m1 == "07"){
+                                    $nm1 = "Juli";
+                                } elseif($m1 == "08"){
+                                    $nm1 = "Agustus";
+                                } elseif($m1 == "09"){
+                                    $nm1 = "September";
+                                } elseif($m1 == "10"){
+                                    $nm1 = "Oktober";
+                                } elseif($m1 == "11"){
+                                    $nm1 = "November";
+                                } elseif($m1 == "12"){
+                                    $nm1 = "Desember";
+                                }
+                                echo '
                             <tr>
                                 <td id="right"><strong>Disediakan kepada Yth</strong></td>
-                                <td id="left">'.json_encode($row['isi'],true).'</td>
-                                <td rowspan="4"><strong>Tanggal : '.$d." ".$nm." ".$y.'</strong>
+                                <td id="left">'.$row['tujuan'].'</td>
+                                <td rowspan="4"><strong>Tanggal : '.$d1." ".$nm1." ".$y1.'</strong>
                                     <div id="lead">
                                         <p><center>Sekretaris Dinas</center></p>
                                         <div style="height: 50px;"><center>TTD.</center></div>
@@ -292,15 +328,9 @@
                             </tr>
                             <tr>
                                 <td id="right"><strong>Untuk</strong></td>
-                                <td id="left">'.$row['isi'].'</td>
+                                <td id="left">'.$row['perintah'].'</td>
                             </tr>
-                            <tr>';
-                            $query3 = mysqli_query($config, "SELECT * FROM tbl_disposisi JOIN tbl_surat_masuk ON tbl_disposisi.id_surat = tbl_surat_masuk.id_surat WHERE tbl_disposisi.id_surat='$id_surat'");
-
-                            if(mysqli_num_rows($query3) > 0){
-                                $no = 0;
-                                $row = mysqli_fetch_array($query3);{
-                                echo '
+                            <tr>
                             <tr class="isi">
                                 <td colspan="2">
                                     <strong>Isi Disposisi :</strong><br/>'.$row['isi_disposisi'].'
