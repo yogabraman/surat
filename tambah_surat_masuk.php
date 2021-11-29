@@ -107,6 +107,8 @@ if (empty($_SESSION['admin'])) {
                                                     $client->setAuthConfig("oauth-credentials.json");
                                                     $client->addScope("https://www.googleapis.com/auth/drive");
                                                     $service = new Google_Service_Drive($client);
+                                                    // session_start(); //starts a session
+                                                    // session_unset(); //flushes out all the contents previously set
 
                                                     // proses membaca token pasca login
                                                     if (isset($_GET['code'])) {

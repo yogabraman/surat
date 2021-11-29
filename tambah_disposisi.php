@@ -11,8 +11,8 @@ if (empty($_SESSION['admin'])) {
         $id_surat = $_REQUEST['id_surat'];
         $query = mysqli_query($config, "SELECT * FROM tbl_surat_masuk WHERE id_surat='$id_surat'");
         $no = 1;
-        list($id_surat) = mysqli_fetch_array($query);
-        // print_r($_REQUEST['struktural']);
+        $colNames = mysqli_fetch_array($query);
+        // list($id_surat) = mysqli_fetch_array($query);
 
         //validasi form kosong
         if (
@@ -59,17 +59,24 @@ if (empty($_SESSION['admin'])) {
                                 $_SESSION['sifat'] = 'Form SIFAT hanya boleh mengandung karakter huruf dan spasi';
                                 echo '<script language="javascript">window.history.back();</script>';
                             } else {
+                                //tipe surat
+                                $tipe = $colNames['tipe_surat'];
 
                                 $query = mysqli_query($config, "INSERT INTO tbl_disposisi(tujuan,perintah,isi_disposisi,sifat,tgl_dispo,catatan,id_surat,id_user)
                                         VALUES('$tujuan','$perintah','$isi_disposisi','$sifat',NOW(),'$catatan','$id_surat','$id_user')");
 
+                                $query_dispo = mysqli_query($config, "UPDATE tbl_surat_masuk SET status_dispo=1 WHERE id_surat='$id_surat'");
+
                                 if ($query == true) {
+                                    if($tipe==1){
+                                        $query_und = mysqli_query($config, "UPDATE tbl_agenda SET dispo='$tujuan' WHERE id_surat='$id_surat'");
+                                    }
                                     $_SESSION['succAdd'] = 'SUKSES! Data berhasil ditambahkan';
                                     echo '<script language="javascript">
                                                 window.location.href="./admin.php?page=tsm&act=disp&id_surat=' . $id_surat . '";
                                               </script>';
                                 } else {
-                                    $_SESSION['errQ'] = 'ERROR! Ada masalah dengan query';
+                                    $_SESSION['errQ'] = 'ERROR! Ada masalah dengan query disposisi';
                                     echo '<script language="javascript">window.history.back();</script>';
                                 }
                             }
@@ -134,28 +141,28 @@ if (empty($_SESSION['admin'])) {
                 <!-- Row in form START -->
                 <div class="row">
                     <div class="input-field col s6">
-                        <i class="material-icons prefix md-prefix">supervisor_account</i><label>Kepada Yth:</label><br/>
+                        <i class="material-icons prefix md-prefix">supervisor_account</i><label>Kepada Yth:</label><br />
                         <?php
                         $query = mysqli_query($config, "SELECT * FROM tbl_struktural");
                         if (mysqli_num_rows($query) > 0) {
                             while ($row = mysqli_fetch_array($query)) {
                         ?>
-                        <input id="struk_<?= $row['id_struk'] ?>" type="checkbox" class="validate" name="tujuan[]" value="<?= $row['nama'] ?>" >
-                        <label for="struk_<?= $row['id_struk'] ?>"><?= $row['nama'] ?></label>
+                                <input id="struk_<?= $row['id_struk'] ?>" type="checkbox" class="validate" name="tujuan[]" value="<?= $row['nama'] ?>">
+                                <label for="struk_<?= $row['id_struk'] ?>"><?= $row['nama'] ?></label>
                         <?php
                             }
                         }
                         ?>
                     </div>
                     <div class="input-field col s6">
-                        <i class="material-icons prefix md-prefix">assignment</i><label>Untuk :</label><br/>
+                        <i class="material-icons prefix md-prefix">assignment</i><label>Untuk :</label><br />
                         <?php
                         $query = mysqli_query($config, "SELECT * FROM tbl_perintah");
                         if (mysqli_num_rows($query) > 0) {
                             while ($row = mysqli_fetch_array($query)) {
                         ?>
-                        <input id="<?= $row['id_perintah'] ?>" type="checkbox" class="validate" name="perintah[]" value="<?= $row['perintah'] ?>" >
-                        <label for="<?= $row['id_perintah'] ?>"><?= $row['perintah'] ?></label>
+                                <input id="<?= $row['id_perintah'] ?>" type="checkbox" class="validate" name="perintah[]" value="<?= $row['perintah'] ?>">
+                                <label for="<?= $row['id_perintah'] ?>"><?= $row['perintah'] ?></label>
                         <?php
                             }
                         }
@@ -175,7 +182,7 @@ if (empty($_SESSION['admin'])) {
                         </div> -->
                     <div class="input-field col s6">
                         <i class="material-icons prefix md-prefix">description</i>
-                        <textarea id="isi_disposisi" class="materialize-textarea validate" name="isi_disposisi" ></textarea>
+                        <textarea id="isi_disposisi" class="materialize-textarea validate" name="isi_disposisi"></textarea>
                         <?php
                         if (isset($_SESSION['isi_disposisi'])) {
                             $isi_disposisi = $_SESSION['isi_disposisi'];
@@ -187,7 +194,7 @@ if (empty($_SESSION['admin'])) {
                     </div>
                     <div class="input-field col s6">
                         <i class="material-icons prefix md-prefix">featured_play_list </i>
-                        <input id="catatan" type="text" class="validate" name="catatan" >
+                        <input id="catatan" type="text" class="validate" name="catatan">
                         <?php
                         if (isset($_SESSION['catatan'])) {
                             $catatan = $_SESSION['catatan'];
@@ -200,7 +207,7 @@ if (empty($_SESSION['admin'])) {
                     <div class="input-field col s6">
                         <i class="material-icons prefix md-prefix">low_priority</i><label>Pilih Sifat Disposisi</label><br />
                         <div class="input-field col s11 right">
-                            <select class="browser-default validate" name="sifat" id="sifat" >
+                            <select class="browser-default validate" name="sifat" id="sifat">
                                 <option value="Biasa">Biasa</option>
                                 <option value="Penting">Penting</option>
                                 <option value="Segera">Segera</option>

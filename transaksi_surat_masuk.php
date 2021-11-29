@@ -355,7 +355,7 @@
 
                                 //script untuk menampilkan data
                                 // $query = mysqli_query($config, "SELECT * FROM tbl_surat_masuk ORDER by id_surat DESC LIMIT $curr, $limit");
-                                $query = mysqli_query($config, "SELECT * FROM tbl_surat_masuk ORDER by status_dispo ASC LIMIT $curr, $limit");
+                                $query = mysqli_query($config, "SELECT * FROM tbl_surat_masuk ORDER by status_dispo ASC, id_surat DESC LIMIT $curr, $limit");
                                 if(mysqli_num_rows($query) > 0){
                                     $no = 1;
                                     while($row = mysqli_fetch_array($query)){
