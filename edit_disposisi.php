@@ -9,6 +9,7 @@ if (empty($_SESSION['admin'])) {
     if (isset($_REQUEST['submit'])) {
 
         $id_surat = $_REQUEST['id_surat'];
+        echo '$id_surat';
         $query = mysqli_query($config, "SELECT * FROM tbl_surat_masuk WHERE id_surat='$id_surat'");
         // list($id_surat) = mysqli_fetch_array($query);
         $colNames = mysqli_fetch_array($query);
@@ -147,9 +148,9 @@ if (empty($_SESSION['admin'])) {
                             <div class="input-field col s6">
                                 <i class="material-icons prefix md-prefix">supervisor_account</i><label>Kepada Yth:</label><br />
                                 <?php
-                                $query = mysqli_query($config, "SELECT * FROM tbl_struktural");
-                                if (mysqli_num_rows($query) > 0) {
-                                    while ($row = mysqli_fetch_array($query)) {
+                                $query_struk = mysqli_query($config, "SELECT * FROM tbl_struktural");
+                                if (mysqli_num_rows($query_struk) > 0) {
+                                    while ($row = mysqli_fetch_array($query_struk)) {
                                 ?>
                                         <input id="struk_<?= $row['id_struk'] ?>" type="checkbox" class="validate" name="tujuan[]" value="<?= $row['nama'] ?>">
                                         <label for="struk_<?= $row['id_struk'] ?>"><?= $row['nama'] ?></label>
@@ -161,9 +162,9 @@ if (empty($_SESSION['admin'])) {
                             <div class="input-field col s6">
                                 <i class="material-icons prefix md-prefix">assignment</i><label>Untuk :</label><br />
                                 <?php
-                                $query = mysqli_query($config, "SELECT * FROM tbl_perintah");
-                                if (mysqli_num_rows($query) > 0) {
-                                    while ($row = mysqli_fetch_array($query)) {
+                                $query_per = mysqli_query($config, "SELECT * FROM tbl_perintah");
+                                if (mysqli_num_rows($query_per) > 0) {
+                                    while ($row = mysqli_fetch_array($query_per)) {
                                 ?>
                                         <input id="<?= $row['id_perintah'] ?>" type="checkbox" class="validate" name="perintah[]" value="<?= $row['perintah'] ?>">
                                         <label for="<?= $row['id_perintah'] ?>"><?= $row['perintah'] ?></label>

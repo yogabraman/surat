@@ -155,7 +155,7 @@
                                             $tuj = json_decode($row['tujuan']);
                                             $per = json_decode($row['perintah']);
                                              echo ' <td>'.$no.'</td>
-                                                    <td>'.implode("<br>",$tuj).'</td>
+                                                    <td>'.!empty($tuj) ? implode("<br>",$per) : ''.'</td>
                                                     <td>'.implode("<br>",$per).'</td>
                                                     <td>'.$row['isi_disposisi'].'</td>';
 

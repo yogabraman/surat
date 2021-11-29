@@ -201,12 +201,13 @@ if (empty($_SESSION['admin'])) {
                         echo '
 
                                         <td>' . $d . " " . $nm . " " . $y . '</td>';
+                                        $disp = json_decode($row['dispo']);
                         echo '
                                         <td>' . substr($row['waktu_agenda'], 0, 5) . '</td>
                                         <td>' . $row['asal'] . '</td>
                                         <td>' . $row['tempat'] . '</td>
                                         <td>' . substr($row['isi'], 0, 200) . '
-                                        <td>' . $row['dispo'] . '
+                                        <td>' . implode("<br>",$disp) . '
                                         <td>';
 
 
@@ -374,12 +375,13 @@ if (empty($_SESSION['admin'])) {
                         echo '
 
                                         <td>' . $d . " " . $nm . " " . $y . '</td>';
+                                        $disp = json_decode($row['dispo']);
                         echo '
                                         <td>' . substr($row['waktu_agenda'], 0, 5) . '</td>
                                         <td>' . $row['asal'] . '</td>
                                         <td>' . $row['tempat'] . '</td>
                                         <td>' . substr($row['isi'], 0, 200) . '
-                                        <td>' . $row['dispo'] . '
+                                        <td>' . implode("<br>",$disp) . '
                                         <td>';
 
 
