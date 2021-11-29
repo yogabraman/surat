@@ -313,10 +313,12 @@
                                 } elseif($m1 == "12"){
                                     $nm1 = "Desember";
                                 }
+                                $tuj = json_decode($row['tujuan']);
+                                $per = json_decode($row['perintah']);
                                 echo '
                             <tr>
                                 <td id="right"><strong>Disediakan kepada Yth</strong></td>
-                                <td id="left">'.$row['tujuan'].'</td>
+                                <td id="left">'.implode("<br>",$tuj).'</td>
                                 <td rowspan="4"><strong>Tanggal : '.$d1." ".$nm1." ".$y1.'</strong>
                                     <div id="lead">
                                         <p><center>Sekretaris Dinas</center></p>
@@ -328,7 +330,7 @@
                             </tr>
                             <tr>
                                 <td id="right"><strong>Untuk</strong></td>
-                                <td id="left">'.$row['perintah'].'</td>
+                                <td id="left">'.implode("<br>",$per).'</td>
                             </tr>
                             <tr>
                             <tr class="isi">

@@ -152,9 +152,11 @@
                                             $no = 0;
                                             while($row = mysqli_fetch_array($query2)){
                                             $no++;
+                                            $tuj = json_decode($row['tujuan']);
+                                            $per = json_decode($row['perintah']);
                                              echo ' <td>'.$no.'</td>
-                                                    <td>'.$row['tujuan'].'</td>
-                                                    <td>'.$row['perintah'].'</td>
+                                                    <td>'.implode("<br>",$tuj).'</td>
+                                                    <td>'.implode("<br>",$per).'</td>
                                                     <td>'.$row['isi_disposisi'].'</td>';
 
                                                     $y = substr($row['tgl_dispo'],0,4);

@@ -27,6 +27,8 @@
     	if(mysqli_num_rows($query) > 0){
             $no = 1;
             while($row = mysqli_fetch_array($query)){
+				$tuj = json_decode($row['tujuan']);
+				$per = json_decode($row['perintah']);
 
     		  echo '<!-- Row form Start -->
     				<div class="row jarak-card">
@@ -43,7 +45,12 @@
             				                <tr>
             				                    <td width="13%">Tujuan</td>
             				                    <td width="1%">:</td>
-            				                    <td width="86%">'.$row['tujuan'].'</td>
+            				                    <td width="86%">'.implode(", ",$tuj).'</td>
+            				                </tr>
+            				                <tr>
+            				                    <td width="13%">Tujuan</td>
+            				                    <td width="1%">:</td>
+            				                    <td width="86%">'.implode(", ",$per).'</td>
             				                </tr>
             				                <tr>
             				                    <td width="13%">Isi Disposis</td>
@@ -97,4 +104,3 @@
     		    }
     	    }
         }
-?>
