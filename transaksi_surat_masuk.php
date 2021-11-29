@@ -365,7 +365,8 @@
                                         <td>'.substr($row['isi'],0,200).'<br/><br/><strong>File :</strong>';
 
                                         if(!empty($row['file'])){
-                                            echo ' <strong><a href="?page=fsm&id_surat='.$row['id_surat'].'">'.$row['file'].'</a></strong>';
+                                            $files = explode('-', $row['file']);
+                                            echo ' <strong><a href="?page=fsm&id_surat='.$row['id_surat'].'">'.$files[1].'</a></strong>';
                                         } else {
                                             echo '<em>Tidak ada file yang di upload</em>';
                                         } echo '</td>

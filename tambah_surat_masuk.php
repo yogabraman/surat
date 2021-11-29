@@ -1,4 +1,5 @@
 <?php
+include 'vendor/autoload.php';
 //cek session
 if (empty($_SESSION['admin'])) {
     $_SESSION['err'] = '<center>Anda harus login terlebih dahulu!</center>';
@@ -10,12 +11,12 @@ if (empty($_SESSION['admin'])) {
 
         //validasi form kosong
         if (
-            $_REQUEST['no_agenda'] == "" || 
-            $_REQUEST['no_surat'] == "" || 
-            $_REQUEST['asal_surat'] == "" || 
-            $_REQUEST['isi'] == "" || 
+            $_REQUEST['no_agenda'] == "" ||
+            $_REQUEST['no_surat'] == "" ||
+            $_REQUEST['asal_surat'] == "" ||
+            $_REQUEST['isi'] == "" ||
             // $_REQUEST['kode'] == "" || 
-            $_REQUEST['tgl_surat'] == "" || 
+            $_REQUEST['tgl_surat'] == "" ||
             $_REQUEST['keterangan'] == ""
         ) {
             $_SESSION['errEmpty'] = 'ERROR! Semua form wajib diisi';
@@ -91,27 +92,97 @@ if (empty($_SESSION['admin'])) {
                                         if ($file != "") {
 
                                             // $rand = rand(1, 10000);
-                                            date_default_timezone_set('Asia/Jakarta');
-                                            $rand = date("YmdHis");
-                                            $nfile = $rand . "-" . $file;
+                                            // date_default_timezone_set('Asia/Jakarta');
+                                            // $rand = date("YmdHis");
+                                            // $nfile = $rand . "-" . $file;
 
                                             //validasi file
                                             if (in_array($eks, $ekstensi) == true) {
                                                 if ($ukuran < 2500000) {
 
-                                                    move_uploaded_file($_FILES['file']['tmp_name'], $target_dir . $nfile);
+                                                    // move_uploaded_file($_FILES['file']['tmp_name'], $target_dir . $nfile);
 
-                                                    $query = mysqli_query($config, "INSERT INTO tbl_surat_masuk(no_agenda,no_surat,asal_surat,isi,tgl_surat,
-                                                                    tgl_diterima,file,keterangan,id_user)
-                                                                        VALUES('$no_agenda','$no_surat','$asal_surat','$isi','$tgl_surat',NOW(),'$nfile','$keterangan','$id_user')");
+                                                    // setting config untuk layanan akses ke google drive
+                                                    $client = new Google_Client();
+                                                    $client->setAuthConfig("oauth-credentials.json");
+                                                    $client->addScope("https://www.googleapis.com/auth/drive");
+                                                    $service = new Google_Service_Drive($client);
 
-                                                    if ($query == true) {
-                                                        $_SESSION['succAdd'] = 'SUKSES! Data berhasil ditambahkan';
-                                                        header("Location: ./admin.php?page=tsm");
-                                                        die();
+                                                    // proses membaca token pasca login
+                                                    if (isset($_GET['code'])) {
+                                                        $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
+                                                        // simpan token ke session
+                                                        $_SESSION['upload_token'] = $token;
+                                                    }
+
+                                                    if (empty($_SESSION['upload_token'])) {
+                                                        // jika token belum ada, maka lakukan login via oauth
+                                                        $authUrl = $client->createAuthUrl();
+                                                        header("Location:" . $authUrl);
                                                     } else {
-                                                        $_SESSION['errQ'] = 'ERROR! Ada masalah dengan query';
-                                                        echo '<script language="javascript">window.history.back();</script>';
+
+                                                        // menggunakan token untuk mengakses google drive  
+                                                        $client->setAccessToken($_SESSION['upload_token']);
+                                                        // membaca token respon dari google drive
+                                                        $client->getAccessToken();
+
+                                                        // instansiasi obyek file yg akan diupload ke Google Drive
+                                                        $filee = new Google_Service_Drive_DriveFile();
+                                                        // set nama file di Google Drive disesuaikan dg nama file aslinya
+                                                        date_default_timezone_set('Asia/Jakarta');
+                                                        $rand = date("YmdHis");
+                                                        $filename = $rand . "-" . $_FILES['file']['name'];
+
+                                                        $filee->setName($filename);
+                                                        // set folder file di Google Drive
+                                                        $folder = "1COI-Gea0FSpfjJeE441Lnt9oMnJ9qpmi";
+                                                        $filee->setParents([$folder]);
+                                                        // proses upload file ke Google Drive dg multipart
+                                                        $result = $service->files->create($filee, array(
+                                                            'data' => file_get_contents($_FILES['file']['tmp_name']),
+                                                            'mimeType' => 'application/octet-stream',
+                                                            'uploadType' => 'multipart'
+                                                        ));
+
+                                                        // menampilkan nama file yang sudah diupload ke google drive
+                                                        $nfile = $filename . "-" . $result->id;
+
+                                                        //jika surat biasa
+                                                        $tipe_surat = $_POST['tipe_surat'];
+                                                        if ($tipe_surat == 0) {
+                                                            $query = mysqli_query($config, "INSERT INTO tbl_surat_masuk(no_agenda,no_surat,asal_surat,isi,tgl_surat, tgl_diterima,file,keterangan,status_dispo,tipe_surat,id_user)
+                                                            VALUES('$no_agenda','$no_surat','$asal_surat','$isi','$tgl_surat',NOW(),'$nfile','$keterangan',0,$tipe_surat,'$id_user')");
+
+                                                            if ($query == true) {
+                                                                $_SESSION['succAdd'] = 'SUKSES! Data berhasil ditambahkan';
+                                                                header("Location: ./admin.php?page=tsm");
+                                                                die();
+                                                            } else {
+                                                                $_SESSION['errQ'] = 'ERROR! Ada masalah dengan query';
+                                                                echo '<script language="javascript">window.history.back();</script>';
+                                                            }
+                                                        } else {
+                                                            //jika surat undangan
+                                                            $query = mysqli_query($config, "INSERT INTO tbl_surat_masuk(no_agenda,no_surat,asal_surat,isi,tgl_surat, tgl_diterima,file,keterangan,status_dispo,tipe_surat,id_user)
+                                                            VALUES('$no_agenda','$no_surat','$asal_surat','$isi','$tgl_surat',NOW(),'$nfile','$keterangan',0,$tipe_surat,'$id_user')");
+
+                                                            if ($query == true) {
+                                                                $last_id = mysqli_insert_id($config);
+                                                                $query_und = mysqli_query($config, "INSERT INTO tbl_agenda(asal,isi,tgl_agenda,waktu_agenda,tempat, id_surat, id_user)
+                                                            VALUES('$asal_surat','$isi','$tgl_agenda','$waktu_agenda','$tempat','$last_id','$id_user')");
+                                                                if ($query_und == true) {
+                                                                    $_SESSION['succAdd'] = 'SUKSES! Data berhasil ditambahkan';
+                                                                    header("Location: ./admin.php?page=tsm");
+                                                                    die();
+                                                                } else {
+                                                                    $_SESSION['errQ'] = 'ERROR! Ada masalah dengan query';
+                                                                    echo '<script language="javascript">window.history.back();</script>';
+                                                                }
+                                                            } else {
+                                                                $_SESSION['errQ'] = 'ERROR! Ada masalah dengan query';
+                                                                echo '<script language="javascript">window.history.back();</script>';
+                                                            }
+                                                        }
                                                     }
                                                 } else {
                                                     $_SESSION['errSize'] = 'Ukuran file yang diupload terlalu besar!';
@@ -123,10 +194,10 @@ if (empty($_SESSION['admin'])) {
                                             }
                                         } else {
                                             //jika form file gambar kosong akan mengeksekusi script dibawah ini
-                                            
+
                                             //jika surat biasa
                                             $tipe_surat = $_POST['tipe_surat'];
-                                            if($tipe_surat==0){
+                                            if ($tipe_surat == 0) {
                                                 $query = mysqli_query($config, "INSERT INTO tbl_surat_masuk(no_agenda,no_surat,asal_surat,isi,tgl_surat, tgl_diterima,file,keterangan,status_dispo,tipe_surat,id_user)
                                                             VALUES('$no_agenda','$no_surat','$asal_surat','$isi','$tgl_surat',NOW(),'','$keterangan',0,$tipe_surat,'$id_user')");
 
@@ -135,11 +206,11 @@ if (empty($_SESSION['admin'])) {
                                                     header("Location: ./admin.php?page=tsm");
                                                     die();
                                                 } else {
-                                                $_SESSION['errQ'] = 'ERROR! Ada masalah dengan query';
-                                                echo '<script language="javascript">window.history.back();</script>';
+                                                    $_SESSION['errQ'] = 'ERROR! Ada masalah dengan query';
+                                                    echo '<script language="javascript">window.history.back();</script>';
                                                 }
-
-                                            }else{
+                                            } else {
+                                                //jika surat undangan
                                                 $query = mysqli_query($config, "INSERT INTO tbl_surat_masuk(no_agenda,no_surat,asal_surat,isi,tgl_surat, tgl_diterima,file,keterangan,status_dispo,tipe_surat,id_user)
                                                             VALUES('$no_agenda','$no_surat','$asal_surat','$isi','$tgl_surat',NOW(),'','$keterangan',0,$tipe_surat,'$id_user')");
 
@@ -147,21 +218,19 @@ if (empty($_SESSION['admin'])) {
                                                     $last_id = mysqli_insert_id($config);
                                                     $query_und = mysqli_query($config, "INSERT INTO tbl_agenda(asal,isi,tgl_agenda,waktu_agenda,tempat, id_surat, id_user)
                                                             VALUES('$asal_surat','$isi','$tgl_agenda','$waktu_agenda','$tempat','$last_id','$id_user')");
-                                                    if($query_und==true){
+                                                    if ($query_und == true) {
                                                         $_SESSION['succAdd'] = 'SUKSES! Data berhasil ditambahkan';
                                                         header("Location: ./admin.php?page=tsm");
                                                         die();
-                                                    }else{
+                                                    } else {
                                                         $_SESSION['errQ'] = 'ERROR! Ada masalah dengan query';
                                                         echo '<script language="javascript">window.history.back();</script>';
                                                     }
-                                                } 
-                                                else {
+                                                } else {
                                                     $_SESSION['errQ'] = 'ERROR! Ada masalah dengan query';
                                                     echo '<script language="javascript">window.history.back();</script>';
                                                 }
                                             }
-                                            
                                         }
                                     }
                                 }
@@ -364,43 +433,43 @@ if (empty($_SESSION['admin'])) {
 
                     <div id="undangan">
 
-                    <div class="input-field col s6">
-                        <i class="material-icons prefix md-prefix">date_range</i>
-                        <input id="tgl_agenda" type="text" name="tgl_agenda" class="datepicker">
-                        <?php
-                        if (isset($_SESSION['tgl_agenda'])) {
-                            $tgl_agenda = $_SESSION['tgl_agenda'];
-                            echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">' . $tgl_agenda . '</div>';
-                            unset($_SESSION['tgl_agenda']);
-                        }
-                        ?>
-                        <label for="tgl_agenda">Tanggal Acara</label>
-                    </div>
+                        <div class="input-field col s6">
+                            <i class="material-icons prefix md-prefix">date_range</i>
+                            <input id="tgl_agenda" type="text" name="tgl_agenda" class="datepicker">
+                            <?php
+                            if (isset($_SESSION['tgl_agenda'])) {
+                                $tgl_agenda = $_SESSION['tgl_agenda'];
+                                echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">' . $tgl_agenda . '</div>';
+                                unset($_SESSION['tgl_agenda']);
+                            }
+                            ?>
+                            <label for="tgl_agenda">Tanggal Acara</label>
+                        </div>
 
-                    <div class="input-field col s6">
-                        <i class="material-icons prefix md-prefix">place</i>
-                        <input id="tempat" type="text" class="validate" name="tempat">
-                        <?php
-                        if (isset($_SESSION['tempat'])) {
-                            $tempat = $_SESSION['tempat'];
-                            echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">' . $tempat . '</div>';
-                            unset($_SESSION['tempat']);
-                        }
-                        ?>
-                        <label for="tempat">Tempat Acara</label>
-                    </div>
+                        <div class="input-field col s6">
+                            <i class="material-icons prefix md-prefix">place</i>
+                            <input id="tempat" type="text" class="validate" name="tempat">
+                            <?php
+                            if (isset($_SESSION['tempat'])) {
+                                $tempat = $_SESSION['tempat'];
+                                echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">' . $tempat . '</div>';
+                                unset($_SESSION['tempat']);
+                            }
+                            ?>
+                            <label for="tempat">Tempat Acara</label>
+                        </div>
 
-                    <div class="input-field col s6">
-                        <i class="material-icons prefix md-prefix">alarm</i>
-                        <input id="waktu_agenda" type="time" name="waktu_agenda" class=""></input>
-                        <?php
-                        if (isset($_SESSION['waktu_agenda'])) {
-                            $waktu_agenda = $_SESSION['waktu_agenda'];
-                            echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">' . $waktu_agenda . '</div>';
-                            unset($_SESSION['waktu_agenda']);
-                        }
-                        ?>
-                    </div>
+                        <div class="input-field col s6">
+                            <i class="material-icons prefix md-prefix">alarm</i>
+                            <input id="waktu_agenda" type="time" name="waktu_agenda" class=""></input>
+                            <?php
+                            if (isset($_SESSION['waktu_agenda'])) {
+                                $waktu_agenda = $_SESSION['waktu_agenda'];
+                                echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">' . $waktu_agenda . '</div>';
+                                unset($_SESSION['waktu_agenda']);
+                            }
+                            ?>
+                        </div>
 
                     </div>
 

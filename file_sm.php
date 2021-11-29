@@ -25,11 +25,6 @@
                                                         <td width="86%">'.$row['no_agenda'].'</td>
                                                     </tr>
                                                     <tr>
-                                                        <td width="13%">Kode Klasifikasi</td>
-                                                        <td width="1%">:</td>
-                                                        <td width="86%">'.$row['kode'].'</td>
-                                                    </tr>
-                                                    <tr>
                                                     <td width="13%">Isi Ringkas</td>
                                                     <td width="1%">:</td>
                                                     <td width="86%">'.$row['isi'].'</td>
@@ -107,7 +102,8 @@
 
                             if(in_array($eks, $ekstensi) == true){
                                 echo '<img class="gbr" data-caption="'.date('d M Y', strtotime($row['tgl_diterima'])).'" src="./upload/surat_masuk/'.$row['file'].'"/>';
-                            } else {
+                            } else {                                    
+                                $files = explode('-', $row['file']);
 
                                 if(in_array($eks, $ekstensi2) == true){
                                     echo '
@@ -120,7 +116,7 @@
                                                             <p>File lampiran surat masuk ini bertipe <strong>document</strong>, silakan klik link dibawah ini untuk melihat file lampiran tersebut.</p>
                                                         </div>
                                                         <div class="card-action">
-                                                            <strong>Lihat file :</strong> <a class="blue-text" href="./upload/surat_masuk/'.$row['file'].'" target="_blank">'.$row['file'].'</a>
+                                                            <strong>Lihat file :</strong> <a class="blue-text" href="download.php?id='.$files[2].'" target="_blank">'.$files[1].'</a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -142,7 +138,7 @@
                                                             <p>File lampiran surat masuk ini bertipe <strong>PDF</strong>, silakan klik link dibawah ini untuk melihat file lampiran tersebut.</p>
                                                         </div>
                                                         <div class="card-action">
-                                                            <strong>Lihat file :</strong> <a class="blue-text" href="./upload/surat_masuk/'.$row['file'].'" target="_blank">'.$row['file'].'</a>
+                                                            <strong>Lihat file :</strong> <a class="blue-text" href="download.php?id='.$files[2].'" target="_blank">'.$files[1].'</a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -160,4 +156,3 @@
             }
         }
     }
-?>
