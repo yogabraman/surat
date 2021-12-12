@@ -61,38 +61,37 @@ if (!empty($_SESSION['admin'])) {
         });
     </script>
 
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('#profile').on('change', function(e) {
-                var id = $(this).val();
-                var qty = $('#jumlah').val();
-                var rupiah = document.getElementById('rupiah');
-                $('#price').empty();
-                $('#price_total').empty();
-                //$('#price').append('<input class="form-control" type="text" name="price" value=' + 0 + '>');
-                $.ajax({
-                    type: "POST",
-                    url: "filter.php",
-                    dataType: "JSON",
-                    data: {
-                        name: id,
-                        qty: qty
-                    },
-                    success: function(data) {
-                        $.each(data, function(key, value) {
-                            $('#price').append('<input class="form-control" type="text" name="price" value="' + formatRupiah(value.asli, 'Rp. ') + '" disabled>');
-                            $('#price').append('<input class="form-control" type="hidden" name="price" value="' + formatRupiah(value.asli, 'Rp. ') + '">');
-                            $('#price_total').append('<input class="form-control" id="rupiah" type="text" name="price_total" value="' + formatRupiah(value.price, 'Rp. ') + '" disabled>');
-                            $('#price_total').append('<input class="form-control" id="rupiah" type="hidden" name="price_total" value="' + formatRupiah(value.price, 'Rp. ') + '">');
-
-                        });
-                    }
+<script type="text/javascript">
+    $(document).ready(function() {
+      $('.fill').hide();
+      $('#filter').on('change',function(e){
+          var id = $(this).val();
+          if (id == "semua") {
+            $('#test-filter').show();
+            $('.fill').hide();
+          } else {
+            $('#test-filter').hide();
+            $('.fill').show();
+          }
+          $('#test').empty();
+          //$('#price').append('<input class="form-control" type="text" name="price" value=' + 0 + '>');
+          $.ajax({
+            type : "POST",
+            url  : "filter.php",
+            dataType : "JSON",
+            data : {id:id},
+            success: function(data){
+                $.each(data,function(key, value){
+                    $('#test').append('<tr><td>'+value.no_agenda+'<br/><hr/>'+value.kode+'</td><td>'+value.isi+'<br/><br/><strong>File : '+value.file+'</strong></td><td>'+value.asal_surat+'</td><td>'+value.no_surat+'<br/><hr/>'+value.d+''+value.m+''+value.y+'</td><td>'+value.action+'</td></tr>');
+                    
                 });
-                return false;
-            });
-
+            }
         });
-    </script>
+          return false;
+      });
+
+    });
+</script>
 
     <script type="text/javascript">
         //jquery dropdown

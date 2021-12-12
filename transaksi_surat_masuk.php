@@ -80,11 +80,11 @@
                                     </div>
 
                                     <div class="col m3">
-                            <select class="browser-default validate" name="surat_masuk" style="opacity: 60%">
+                            <select class="browser-default validate" name="surat_masuk" id="filter" style="opacity: 60%">
                                 <option value="semua">semua</option>
-                                <option value="5">belum disposisi</option>
+                                <option value="0">belum disposisi</option>
                                 <option value="1">sudah disposisi</option>
-                                <option value="2">semua</option>
+                                <option value="semua">semua</option>
                             </select>
                         </div>
                                     
@@ -138,8 +138,29 @@
                     }
                 ?>
 
+                <!-- filter -->
+
+                <div class="row fill">
+                    <div class="col m12" id="colres">
+                        <table class="bordered" id="tbl">
+                            <thead class="blue lighten-4" id="head">
+                                <tr>
+                                    <th width="10%">No. Agenda</th>
+                                    <th width="30%">Isi Ringkas<br/> File</th>
+                                    <th width="24%">Asal Surat</th>
+                                    <th width="18%">No. Surat<br/>Tgl Surat</th>
+                                    <th width="18%">Tindakan <span class="right"><i class="material-icons" style="color: #333;">settings</i></span></th>
+                                </tr>
+                            </thead>
+                            <tbody id="test">
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <!-- Row form Start -->
-                <div class="row jarak-form">
+                <div class="row jarak-form" id="test-filter">
 
                 <?php
 				//script untuk mencari data
@@ -218,7 +239,6 @@
                                     echo '
 
                                     <td>'.$row['no_surat'].'<br/><hr/>'.$d." ".$nm." ".$y.'</td>
-                                    <td>'.$row['status_dispo'].'</td>
                                     <td>';
 
                                     if($_SESSION['admin'] != $row['id_user'] AND $_SESSION['admin'] != 1){
@@ -300,9 +320,8 @@
                                         <th width="10%">No. Agenda</th>
                                         <th width="30%">Isi Ringkas<br/> File</th>
                                         <th width="24%">Asal Surat</th>
-                                        <th width="14%">No. Surat<br/>Tgl Surat</th>
-                                        <th width="8%">Disposisi</th>
-                                        <th width="14%">Tindakan <span class="right tooltipped" data-position="left" data-tooltip="Atur jumlah data yang ditampilkan"><a class="modal-trigger" href="#modal"><i class="material-icons" style="color: #333;">settings</i></a></span></th>
+                                        <th width="18%">No. Surat<br/>Tgl Surat</th>
+                                        <th width="18%">Tindakan <span class="right tooltipped" data-position="left" data-tooltip="Atur jumlah data yang ditampilkan"><a class="modal-trigger" href="#modal"><i class="material-icons" style="color: #333;">settings</i></a></span></th>
 
                                         <div id="modal" class="modal">
                                         <div class="modal-content white">
@@ -355,7 +374,7 @@
 
                                 //script untuk menampilkan data
                                 // $query = mysqli_query($config, "SELECT * FROM tbl_surat_masuk ORDER by id_surat DESC LIMIT $curr, $limit");
-                                $query = mysqli_query($config, "SELECT * FROM tbl_surat_masuk ORDER by status_dispo ASC, id_surat DESC LIMIT $curr, $limit");
+                                $query = mysqli_query($config, "SELECT * FROM tbl_surat_masuk ORDER by id_surat DESC LIMIT $curr, $limit");
                                 if(mysqli_num_rows($query) > 0){
                                     $no = 1;
                                     while($row = mysqli_fetch_array($query)){
@@ -401,11 +420,10 @@
                                         } elseif($m == "12"){
                                             $nm = "Desember";
                                         }
-                                        $stat = ($row['status_dispo']==0) ? 'belum' : 'sudah';
+                                        // $stat = ($row['status_dispo']==0) ? 'belum' : 'sudah';
                                         echo '
 
                                         <td>'.$row['no_surat'].'<br/><hr/>'.$d." ".$nm." ".$y.'</td>
-                                        <td>'.$stat.'</td>
                                         <td>';
 
                                         if($_SESSION['admin'] != $row['id_user'] AND $_SESSION['admin'] != 1){
