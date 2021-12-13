@@ -50,7 +50,7 @@ if (empty($_SESSION['admin'])) {
                                     <ul class="left">
                                         <li class="waves-effect waves-light hide-on-small-only"><a href="?page=txa" class="judul"><i class="material-icons">event</i> Kegiatan</a></li>
                                         <?php
-                                        if ($_SESSION['admin'] != 1) {
+                                        if ($_SESSION['admin'] == 2 ) {
                                             echo '';
                                         } else {
                                             echo '
@@ -375,13 +375,14 @@ if (empty($_SESSION['admin'])) {
                         echo '
 
                                         <td>' . $d . " " . $nm . " " . $y . '</td>';
-                                        $disp = json_decode($row['dispo']);
+                                        $disp = !empty($row['dispo']) ? implode("<br>",json_decode($row['dispo'])): "";
+                                        // $disp = json_decode($row['dispo']);
                         echo '
                                         <td>' . substr($row['waktu_agenda'], 0, 5) . '</td>
                                         <td>' . $row['asal'] . '</td>
                                         <td>' . $row['tempat'] . '</td>
                                         <td>' . substr($row['isi'], 0, 200) . '
-                                        <td>' . implode("<br>",$disp) . '
+                                        <td>' . $disp . '
                                         <td>';
 
 

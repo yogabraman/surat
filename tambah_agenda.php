@@ -122,6 +122,9 @@ if (empty($_SESSION['admin'])) {
         <div class="row jarak-form">
 
             <!-- Form START -->
+            <?php
+                echo$_SESSION['nip'];
+            ?>
             <form class="col s12" method="POST" action="?page=txa&act=add" enctype="multipart/form-data">
 
                 <!-- Row in form START -->

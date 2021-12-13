@@ -110,7 +110,7 @@ if (!empty($_SESSION['admin'])) {
         // $("#tipe_surat").prop("checked", true);
 
         //jquery datepicker
-        $('#tgl_surat,#tgl_agenda,#batas_waktu,#dari_tanggal,#sampai_tanggal').pickadate({
+        $('#tgl_surat,#tgl_agenda,#tgl_acara,#batas_waktu,#dari_tanggal,#sampai_tanggal').pickadate({
             selectMonths: true,
             selectYears: 10,
             format: "yyyy-mm-dd"
@@ -157,6 +157,15 @@ if (!empty($_SESSION['admin'])) {
                 $('#kode').html('');
                 $.each(json, function(tambah_surat_masuk, row) {
                     $('#kode').append('<option value=' + row.kode + '>' + row.kode + '/' + row.nama + '</option>');
+                });
+            });
+        });
+        //JSON data Klasifikasi
+        $(document).ready(function() {
+            $.getJSON('', function(e) {
+                $('#bidang').html('');
+                $.each(e, function(tambah_user, row) {
+                    $('#bidang').append('<option value=' + row.nama + '>' + row.nama + '</option>');
                 });
             });
         });

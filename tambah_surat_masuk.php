@@ -92,70 +92,40 @@ if (empty($_SESSION['admin'])) {
                                         if ($file != "") {
 
                                             // $rand = rand(1, 10000);
-                                            // date_default_timezone_set('Asia/Jakarta');
-                                            // $rand = date("YmdHis");
-                                            // $nfile = $rand . "-" . $file;
+                                            date_default_timezone_set('Asia/Jakarta');
+                                            $rand = date("YmdHis");
+                                            $nfile = $rand . "-" . $file;
 
                                             //validasi file
                                             if (in_array($eks, $ekstensi) == true) {
                                                 if ($ukuran < 2500000) {
 
-                                                    // move_uploaded_file($_FILES['file']['tmp_name'], $target_dir . $nfile);
+                                                    move_uploaded_file($_FILES['file']['tmp_name'], $target_dir . $nfile);
 
-                                                    // setting config untuk layanan akses ke google drive
-                                                    $client = new Google_Client();
-                                                    $client->setAuthConfig("oauth-credentials.json");
-                                                    $client->addScope("https://www.googleapis.com/auth/drive");
-                                                    $service = new Google_Service_Drive($client);
-                                                    // session_start(); //starts a session
-                                                    // session_unset(); //flushes out all the contents previously set
+                                                    //jika surat biasa
+                                                    $tipe_surat = $_POST['tipe_surat'];
+                                                    if ($tipe_surat == 0) {
+                                                        $query = mysqli_query($config, "INSERT INTO tbl_surat_masuk(no_agenda,no_surat,asal_surat,isi,tgl_surat, tgl_diterima,file,keterangan,status_dispo,tipe_surat,id_user)
+                                                        VALUES('$no_agenda','$no_surat','$asal_surat','$isi','$tgl_surat',NOW(),'$nfile','$keterangan',0,$tipe_surat,'$id_user')");
 
-                                                    // proses membaca token pasca login
-                                                    if (isset($_GET['code'])) {
-                                                        $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
-                                                        // simpan token ke session
-                                                        $_SESSION['upload_token'] = $token;
-                                                    }
-
-                                                    if (empty($_SESSION['upload_token'])) {
-                                                        // jika token belum ada, maka lakukan login via oauth
-                                                        $authUrl = $client->createAuthUrl();
-                                                        header("Location:" . $authUrl);
+                                                        if ($query == true) {
+                                                            $_SESSION['succAdd'] = 'SUKSES! Data berhasil ditambahkan';
+                                                            header("Location: ./admin.php?page=tsm");
+                                                            die();
+                                                        } else {
+                                                            $_SESSION['errQ'] = 'ERROR! Ada masalah dengan query';
+                                                            echo '<script language="javascript">window.history.back();</script>';
+                                                        }
                                                     } else {
+                                                        //jika surat undangan
+                                                        $query = mysqli_query($config, "INSERT INTO tbl_surat_masuk(no_agenda,no_surat,asal_surat,isi,tgl_surat, tgl_diterima,file,keterangan,status_dispo,tipe_surat,id_user)
+                                                        VALUES('$no_agenda','$no_surat','$asal_surat','$isi','$tgl_surat',NOW(),'$nfile','$keterangan',0,$tipe_surat,'$id_user')");
 
-                                                        // menggunakan token untuk mengakses google drive  
-                                                        $client->setAccessToken($_SESSION['upload_token']);
-                                                        // membaca token respon dari google drive
-                                                        $client->getAccessToken();
-
-                                                        // instansiasi obyek file yg akan diupload ke Google Drive
-                                                        $filee = new Google_Service_Drive_DriveFile();
-                                                        // set nama file di Google Drive disesuaikan dg nama file aslinya
-                                                        date_default_timezone_set('Asia/Jakarta');
-                                                        $rand = date("YmdHis");
-                                                        $filename = $rand . "-" . $_FILES['file']['name'];
-
-                                                        $filee->setName($filename);
-                                                        // set folder file di Google Drive
-                                                        $folder = "1COI-Gea0FSpfjJeE441Lnt9oMnJ9qpmi";
-                                                        $filee->setParents([$folder]);
-                                                        // proses upload file ke Google Drive dg multipart
-                                                        $result = $service->files->create($filee, array(
-                                                            'data' => file_get_contents($_FILES['file']['tmp_name']),
-                                                            'mimeType' => 'application/octet-stream',
-                                                            'uploadType' => 'multipart'
-                                                        ));
-
-                                                        // menampilkan nama file yang sudah diupload ke google drive
-                                                        $nfile = $filename . "-" . $result->id;
-
-                                                        //jika surat biasa
-                                                        $tipe_surat = $_POST['tipe_surat'];
-                                                        if ($tipe_surat == 0) {
-                                                            $query = mysqli_query($config, "INSERT INTO tbl_surat_masuk(no_agenda,no_surat,asal_surat,isi,tgl_surat, tgl_diterima,file,keterangan,status_dispo,tipe_surat,id_user)
-                                                            VALUES('$no_agenda','$no_surat','$asal_surat','$isi','$tgl_surat',NOW(),'$nfile','$keterangan',0,$tipe_surat,'$id_user')");
-
-                                                            if ($query == true) {
+                                                        if ($query == true) {
+                                                            $last_id = mysqli_insert_id($config);
+                                                            $query_und = mysqli_query($config, "INSERT INTO tbl_agenda(asal,isi,tgl_agenda,waktu_agenda,tempat, id_surat, id_user)
+                                                        VALUES('$asal_surat','$isi','$tgl_agenda','$waktu_agenda','$tempat','$last_id','$id_user')");
+                                                            if ($query_und == true) {
                                                                 $_SESSION['succAdd'] = 'SUKSES! Data berhasil ditambahkan';
                                                                 header("Location: ./admin.php?page=tsm");
                                                                 die();
@@ -164,28 +134,59 @@ if (empty($_SESSION['admin'])) {
                                                                 echo '<script language="javascript">window.history.back();</script>';
                                                             }
                                                         } else {
-                                                            //jika surat undangan
-                                                            $query = mysqli_query($config, "INSERT INTO tbl_surat_masuk(no_agenda,no_surat,asal_surat,isi,tgl_surat, tgl_diterima,file,keterangan,status_dispo,tipe_surat,id_user)
-                                                            VALUES('$no_agenda','$no_surat','$asal_surat','$isi','$tgl_surat',NOW(),'$nfile','$keterangan',0,$tipe_surat,'$id_user')");
-
-                                                            if ($query == true) {
-                                                                $last_id = mysqli_insert_id($config);
-                                                                $query_und = mysqli_query($config, "INSERT INTO tbl_agenda(asal,isi,tgl_agenda,waktu_agenda,tempat, id_surat, id_user)
-                                                            VALUES('$asal_surat','$isi','$tgl_agenda','$waktu_agenda','$tempat','$last_id','$id_user')");
-                                                                if ($query_und == true) {
-                                                                    $_SESSION['succAdd'] = 'SUKSES! Data berhasil ditambahkan';
-                                                                    header("Location: ./admin.php?page=tsm");
-                                                                    die();
-                                                                } else {
-                                                                    $_SESSION['errQ'] = 'ERROR! Ada masalah dengan query';
-                                                                    echo '<script language="javascript">window.history.back();</script>';
-                                                                }
-                                                            } else {
-                                                                $_SESSION['errQ'] = 'ERROR! Ada masalah dengan query';
-                                                                echo '<script language="javascript">window.history.back();</script>';
-                                                            }
+                                                            $_SESSION['errQ'] = 'ERROR! Ada masalah dengan query';
+                                                            echo '<script language="javascript">window.history.back();</script>';
                                                         }
                                                     }
+
+                                                    // setting config untuk layanan akses ke google drive
+                                                    // $client = new Google_Client();
+                                                    // $client->setAuthConfig("oauth-credentials.json");
+                                                    // $client->addScope("https://www.googleapis.com/auth/drive");
+                                                    // $service = new Google_Service_Drive($client);
+                                                    // // session_start(); //starts a session
+                                                    // // session_unset(); //flushes out all the contents previously set
+
+                                                    // // proses membaca token pasca login
+                                                    // if (isset($_GET['code'])) {
+                                                    //     $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
+                                                    //     // simpan token ke session
+                                                    //     $_SESSION['upload_token'] = $token;
+                                                    // }
+
+                                                    // if (empty($_SESSION['upload_token'])) {
+                                                    //     // jika token belum ada, maka lakukan login via oauth
+                                                    //     $authUrl = $client->createAuthUrl();
+                                                    //     header("Location:" . $authUrl);
+                                                    // } else {
+
+                                                    //     // menggunakan token untuk mengakses google drive  
+                                                    //     $client->setAccessToken($_SESSION['upload_token']);
+                                                    //     // membaca token respon dari google drive
+                                                    //     $client->getAccessToken();
+
+                                                    //     // instansiasi obyek file yg akan diupload ke Google Drive
+                                                    //     $filee = new Google_Service_Drive_DriveFile();
+                                                    //     // set nama file di Google Drive disesuaikan dg nama file aslinya
+                                                    //     date_default_timezone_set('Asia/Jakarta');
+                                                    //     $rand = date("YmdHis");
+                                                    //     $filename = $rand . "-" . $_FILES['file']['name'];
+
+                                                    //     $filee->setName($filename);
+                                                    //     // set folder file di Google Drive
+                                                    //     $folder = "1COI-Gea0FSpfjJeE441Lnt9oMnJ9qpmi";
+                                                    //     $filee->setParents([$folder]);
+                                                    //     // proses upload file ke Google Drive dg multipart
+                                                    //     $result = $service->files->create($filee, array(
+                                                    //         'data' => file_get_contents($_FILES['file']['tmp_name']),
+                                                    //         'mimeType' => 'application/octet-stream',
+                                                    //         'uploadType' => 'multipart'
+                                                    //     ));
+
+                                                    //     // menampilkan nama file yang sudah diupload ke google drive
+                                                    //     $nfile = $filename . "-" . $result->id;
+
+                                                    // }
                                                 } else {
                                                     $_SESSION['errSize'] = 'Ukuran file yang diupload terlalu besar!';
                                                     echo '<script language="javascript">window.history.back();</script>';
