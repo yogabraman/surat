@@ -116,6 +116,21 @@ if (!empty($_SESSION['admin'])) {
             format: "yyyy-mm-dd"
         });
 
+        //datepicker multiple selections
+        $("#tgl_spt").datepicker({
+                        dateFormat: "@", // Unix timestamp
+                        onSelect: function(dateText, inst){
+                            addOrRemoveDate(dateText);
+                        },
+                        beforeShowDay: function(date){
+                            var gotDate = $.inArray($.datepicker.formatDate($(this).datepicker('option', 'dateFormat'), date), dates);
+                            if (gotDate >= 0) {
+                                return [false,"ui-state-highlight", "Event Name"];
+                            }
+                            return [true, ""];
+                        }
+                    });  
+
         //jquery teaxtarea
         // $('#isi_ringkas').val('');
         // $('#isi_ringkas').trigger('autoresize');

@@ -65,6 +65,9 @@ if (empty($_SESSION['admin'])) {
                         case 'ref':
                             include "referensi.php";
                             break;
+                        case 'spt':
+                            include "spt.php";
+                            break;
                         case 'sett':
                             include "pengaturan.php";
                             break;
