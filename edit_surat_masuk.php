@@ -189,7 +189,7 @@
         $query = mysqli_query($config, "SELECT m.id_surat, m.no_agenda, m.no_surat, m.asal_surat, m.isi, m.tgl_surat, m.file, m.keterangan, m.status_dispo, m.tipe_surat, m.id_user FROM tbl_surat_masuk m WHERE id_surat='$id_surat'");
         list($id_surat, $no_agenda, $no_surat, $asal_surat, $isi, $tgl_surat, $file, $keterangan, $status_dispo, $tipe_surat, $id_user) = mysqli_fetch_array($query);
 
-        if($_SESSION['id_user'] != $id_user AND $_SESSION['id_user'] != 1){
+        if($_SESSION['id_user'] != $id_user AND $_SESSION['id_user'] != 1 AND $_SESSION['admin'] != 4){
             echo '<script language="javascript">
                     window.alert("ERROR! Anda tidak memiliki hak akses untuk mengedit data ini");
                     window.location.href="./admin.php?page=tsm";

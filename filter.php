@@ -42,7 +42,7 @@ session_start();
                                         $nm = "Desember";
                                     }
 
-if($_SESSION['admin'] != $row['id_user'] AND $_SESSION['admin'] != 1){
+if($_SESSION['admin'] != $row['id_user'] AND $_SESSION['admin'] != 1 AND $_SESSION['admin'] != 4){
     $action = '<a class="btn small light-green waves-effect waves-light tooltipped" data-position="left" data-tooltip="Pilih Disp untuk Melihat Disposisi Surat" href="?page=tsm&act=disp&id_surat='.$row['id_surat'].'"><i class="material-icons">description</i> DISP</a>';
 } else {
     $action = '<a class="btn small blue waves-effect waves-light" href="?page=tsm&act=edit&id_surat='.$row['id_surat'].'"><i class="material-icons">edit</i> EDIT</a>

@@ -6,7 +6,7 @@
         die();
     } else {
 		
-		if($_SESSION['admin'] != 1 AND $_SESSION['admin'] !=3 AND $_SESSION['admin'] !=2){
+		if($_SESSION['admin'] != 1 AND $_SESSION['admin'] != 4 AND $_SESSION['admin'] !=3 AND $_SESSION['admin'] !=2){
             echo '<script language="javascript">
                     window.alert("ERROR! Anda tidak memiliki hak akses untuk membuka halaman ini");
                     window.location.href="./logout.php";
@@ -241,7 +241,7 @@
                                     <td>'.$row['no_surat'].'<br/><hr/>'.$d." ".$nm." ".$y.'</td>
                                     <td>';
 
-                                    if($_SESSION['admin'] != $row['id_user'] AND $_SESSION['admin'] != 1){
+                                    if($_SESSION['admin'] != $row['id_user'] AND $_SESSION['admin'] != 1 AND $_SESSION['admin'] != 4){
                                             echo '<a class="btn small light-green waves-effect waves-light tooltipped" data-position="left" data-tooltip="Pilih Disp untuk Melihat Disposisi Surat" href="?page=tsm&act=disp&id_surat='.$row['id_surat'].'">
                                                     <i class="material-icons">description</i> DISP</a>';
                                         } else {
@@ -426,7 +426,7 @@
                                         <td>'.$row['no_surat'].'<br/><hr/>'.$d." ".$nm." ".$y.'</td>
                                         <td>';
 
-                                        if($_SESSION['admin'] != $row['id_user'] AND $_SESSION['admin'] != 1){
+                                        if($_SESSION['admin'] != $row['id_user'] AND $_SESSION['admin'] != 1 AND $_SESSION['admin'] != 4){
                                             echo '<a class="btn small light-green waves-effect waves-light tooltipped" data-position="left" data-tooltip="Pilih Disp untuk Melihat Disposisi Surat" href="?page=tsm&act=disp&id_surat='.$row['id_surat'].'">
                                                     <i class="material-icons">description</i> DISP</a>';
                                         } else {

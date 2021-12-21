@@ -43,7 +43,7 @@
                                     <div class="col m7">
                                         <ul class="left">
                                             <li class="waves-effect waves-light hide-on-small-only"><a href="?page=ref" class="judul"><i class="material-icons">class</i> Klasifikasi Surat</a></li>';
-                                            if($_SESSION['admin'] == 1){
+                                            if($_SESSION['admin'] == 1 || $_SESSION['admin'] == 4){
                                                 echo '<li class="waves-effect waves-light"><a href="?page=ref&act=add"><i class="material-icons md-24">add_circle</i> Tambah Data</a></li>';
                                             } else {
                                                 echo '';
@@ -159,7 +159,7 @@
                                         <td>'.$row['uraian'].'</td>
                                         <td>';
 
-                                        if($_SESSION['admin'] != 1 AND $_SESSION['admin'] != 2){
+                                        if($_SESSION['admin'] != 1 AND $_SESSION['admin'] != 4 AND $_SESSION['admin'] != 2){
                                             echo '<a class="btn small blue-grey waves-effect waves-light"><i class="material-icons">error</i> NO ACTION</a>';
                                         } else {
                                           echo '<a class="btn small blue waves-effect waves-light" href="?page=ref&act=edit&id_klasifikasi='.$row['id_klasifikasi'].'">
@@ -293,7 +293,7 @@
                                                 <td>'.$row['uraian'].'</td>
                                                 <td>';
 
-                                                if($_SESSION['admin'] != 1 AND $_SESSION['admin'] != 2){
+                                                if($_SESSION['admin'] != 1 AND $_SESSION['admin'] != 4 AND $_SESSION['admin'] != 2){
                                                     echo '<a class="btn small blue-grey waves-effect waves-light"><i class="material-icons">error</i> NO ACTION</a>';
                                                 } else {
                                                   echo '<a class="btn small blue waves-effect waves-light" href="?page=ref&act=edit&id_klasifikasi='.$row['id_klasifikasi'].'">

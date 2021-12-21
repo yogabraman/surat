@@ -226,6 +226,7 @@ if (empty($_SESSION['admin'])) {
                             <select class="browser-default validate" name="admin" id="admin" required>
                                 <option value="2">Pimpinan</option>
                                 <option value="3">Pegawai</option>
+                                <option value="4">Tata Usaha</option>
                             </select>
                         </div>
                         <?php

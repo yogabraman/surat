@@ -191,7 +191,7 @@
 													
                                                     //Tampilan Aksi Disposisi
 
-													if($_SESSION['admin'] == 1){
+													if($_SESSION['admin'] == 1 || $_SESSION['admin'] == 4){
                                                     echo '
                                                     <td>'.$row['sifat'].'<br/>'.$d." ".$nm." ".$y.'</td>
                                                     <td><a class="btn small yellow darken-3 waves-effect waves-light" href="?page=ctk&id_surat='.$row['id_surat'].'" target="_blank">

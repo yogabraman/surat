@@ -152,7 +152,7 @@
             $id_surat = mysqli_real_escape_string($config, $_REQUEST['id_surat']);
             $query = mysqli_query($config, "SELECT m.id_surat, m.no_agenda, m.tujuan, m.no_surat, m.isi, k.kode, k.nama, m.tgl_surat, m.file, m.keterangan, m.id_user FROM tbl_surat_keluar m JOIN tbl_klasifikasi k ON k.kode = m.kode WHERE id_surat='$id_surat'");
             list($id_surat, $no_agenda, $tujuan, $no_surat, $isi, $kode, $nama, $tgl_surat, $file, $keterangan, $id_user) = mysqli_fetch_array($query);
-            if($_SESSION['id_user'] != $id_user AND $_SESSION['id_user'] != 1){
+            if($_SESSION['id_user'] != $id_user AND $_SESSION['id_user'] != 1 AND $_SESSION['admin'] != 4){
                 echo '<script language="javascript">
                         window.alert("ERROR! Anda tidak memiliki hak akses untuk mengedit data ini");
                         window.location.href="./admin.php?page=tsk";

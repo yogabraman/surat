@@ -121,6 +121,8 @@
 
                                     if($row['admin'] == 1){
                                         $row['admin'] = 'Admin';
+                                    } elseif($row['admin'] == 4){
+                                        $row['admin'] = 'Tata Usaha';
                                     } elseif($row['admin'] == 2){
                                         $row['admin'] = 'Pimpinan';
                                     } else {

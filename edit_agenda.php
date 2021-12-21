@@ -154,7 +154,7 @@ if (empty($_SESSION['admin'])) {
         $query = mysqli_query($config, "SELECT id_agenda, asal, isi, tgl_agenda, waktu_agenda, tempat, dispo, id_user FROM tbl_agenda WHERE id_agenda='$id_agenda'");
         list($id_agenda, $asal, $isi, $tgl_agenda, $waktu_agenda, $tempat, $dispo, $id_user) = mysqli_fetch_array($query);
 
-        if ($_SESSION['id_user'] != $id_user and $_SESSION['id_user'] != 1) {
+        if ($_SESSION['id_user'] != $id_user and $_SESSION['id_user'] != 1 and $_SESSION['admin'] != 4) {
             echo '<script language="javascript">
                     window.alert("ERROR! Anda tidak memiliki hak akses untuk mengedit data ini");
                     window.location.href="./admin.php?page=txa";

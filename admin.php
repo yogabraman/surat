@@ -93,6 +93,8 @@ if (empty($_SESSION['admin'])) {
                                         <?php
                                         if ($_SESSION['admin'] == 1) {
                                             echo "<strong>Admin</strong>. Anda memiliki akses penuh terhadap sistem.";
+                                        } elseif ($_SESSION['admin'] == 4) {
+                                            echo "<strong>Tata Usaha</strong>. Anda memiliki akses penuh terhadap sistem kecuali kelola user";
                                         } elseif ($_SESSION['admin'] == 2) {
                                             echo "<strong>Pimpinan</strong>. Berikut adalah statistik data yang tersimpan dalam sistem.";
                                         } else {
@@ -143,7 +145,7 @@ if (empty($_SESSION['admin'])) {
                         </div>
 
                         <?php
-                        if ($_SESSION['admin'] == 1 || $_SESSION['admin'] == 3) { ?>
+                        if ($_SESSION['admin'] == 1 || $_SESSION['admin'] == 4 || $_SESSION['admin'] == 3) { ?>
                             <div class="col s12 m4">
                                 <div class="card blue-grey">
                                     <div class="card-content">
@@ -156,7 +158,7 @@ if (empty($_SESSION['admin'])) {
                         }
                         ?>
                         <?php
-                        if ($_SESSION['admin'] == 1 || $_SESSION['admin'] == 3) { ?>
+                        if ($_SESSION['admin'] == 1 || $_SESSION['admin'] == 4 || $_SESSION['admin'] == 3) { ?>
                             <div class="col s12 m4">
                                 <div class="card blue-grey">
                                     <div class="card-content">
@@ -170,7 +172,7 @@ if (empty($_SESSION['admin'])) {
                         ?>
 
                         <?php
-                        if ($_SESSION['admin'] == 1) { ?>
+                        if ($_SESSION['admin'] == 1 || $_SESSION['admin'] == 4) { ?>
                             <div class="col s12 m4">
                                 <div class="card blue-grey">
                                     <div class="card-content">
@@ -184,7 +186,7 @@ if (empty($_SESSION['admin'])) {
                         ?>
 
                         <?php
-                        if ($_SESSION['admin'] == 1) { ?>
+                        if ($_SESSION['admin'] == 1 || $_SESSION['admin'] == 4) { ?>
                             <div class="col s12 m4">
                                 <div class="card blue-grey">
                                     <div class="card-content">
