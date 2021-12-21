@@ -188,7 +188,7 @@
                             <p class="warna agenda">Agenda Kegiatan dari tanggal <strong>'.$d." ".$nm." ".$y.'</strong> sampai dengan tanggal <strong>'.$d2." ".$nm2." ".$y2.'</strong></p>
                         </div>
                          <div class="col s2">';
-                                             if($_SESSION['admin'] !=1){
+                                             if($_SESSION['admin'] !=1 AND $_SESSION['admin'] !=4){
                                             	echo '';
 											 } else {
 												 echo '
@@ -204,10 +204,10 @@
                                     <th width="3%">No</th>
                                     <th width="15%">Tanggal</th>
                                     <th width="10%">Jam</th>
-                                    <th width="20%">Dari</th>
+                                    <th width="17%">Dari</th>
                                     <th width="15%">Tempat</th>
-                                    <th width="25%">Acara</th>
-                                    <th width="12%">Dispo</th>
+                                    <th width="22%">Acara</th>
+                                    <th width="18%">Dispo</th>
                                 </tr>
                             </thead>
 
@@ -246,6 +246,7 @@
                                         } elseif($m == "12"){
                                             $nm = "Desember";
                                         }
+                                        $disp = json_decode($row['dispo']);
                                  echo '
                                         <td>'.$no++.'</td>
                                         <td>'.$d." ".$nm." ".$y.'</td>
@@ -253,7 +254,7 @@
                                         <td>'.$row['asal'].'</td>
                                         <td>'.$row['isi'].'</td>
                                         <td>'.$row['tempat'].'</td>
-                                        <td>'.$row['dispo'].'</td>';
+                                        <td>'.implode("<br>",$disp).'</td>';
                                          
                                   echo '</td>
                                 </tr>
