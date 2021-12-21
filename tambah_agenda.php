@@ -26,6 +26,7 @@ if (empty($_SESSION['admin'])) {
             $dari = $_REQUEST['dari'];
             $isi = $_REQUEST['isi'];
             $id_user = $_SESSION['id_user'];
+            $bidang = json_encode(array($_SESSION['nip']));
 
             //validasi input data
             if (!preg_match("/^[0-9.-]*$/", $tgl_acara)) {
@@ -55,7 +56,7 @@ if (empty($_SESSION['admin'])) {
 
                                 //tombol simpan akan mengeksekusi script dibawah ini
                                 $query = mysqli_query($config, "INSERT INTO tbl_agenda(asal,isi,tgl_agenda,waktu_agenda,tempat,dispo,id_user)
-                                VALUES('$dari','$isi','$tgl_acara','$wkt_acara','$tempat','','$id_user')");
+                                VALUES('$dari','$isi','$tgl_acara','$wkt_acara','$tempat','$bidang','$id_user')");
 
                                 if ($query == true) {
                                     $_SESSION['succAdd'] = 'SUKSES! Data berhasil ditambahkan';
@@ -122,9 +123,9 @@ if (empty($_SESSION['admin'])) {
         <div class="row jarak-form">
 
             <!-- Form START -->
-            <?php
-                echo$_SESSION['nip'];
-            ?>
+            <!-- <?php
+                print_r(array($_SESSION['nip']));
+            ?> -->
             <form class="col s12" method="POST" action="?page=txa&act=add" enctype="multipart/form-data">
 
                 <!-- Row in form START -->

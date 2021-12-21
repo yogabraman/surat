@@ -21,67 +21,69 @@ if (empty($_SESSION['admin'])) {
             $username = $_REQUEST['username'];
             $password = $_REQUEST['password'];
             $nama = $_REQUEST['nama'];
-            $bidang = $_REQUEST['bidang'];
+            $id_bidang = $_REQUEST['bidang'];
             // $nip = $_REQUEST['nip'];
             $admin = $_REQUEST['admin'];
-            echo$bidang;
+            // echo$bidang;
 
             //validasi input data
-            // if (!preg_match("/^[a-zA-Z0-9_]*$/", $username)) {
-            //     $_SESSION['uname'] = 'Form Username hanya boleh mengandung karakter huruf, angka dan underscore (_)';
-            //     echo '<script language="javascript">window.history.back();</script>';
-            // } else {
+            if (!preg_match("/^[a-zA-Z0-9_]*$/", $username)) {
+                $_SESSION['uname'] = 'Form Username hanya boleh mengandung karakter huruf, angka dan underscore (_)';
+                echo '<script language="javascript">window.history.back();</script>';
+            } else {
 
-            //     if (!preg_match("/^[a-zA-Z., ]*$/", $nama)) {
-            //         $_SESSION['namauser'] = 'Form Nama hanya boleh mengandung karakter huruf, spasi, titik(.) dan koma(,)';
-            //         echo '<script language="javascript">window.history.back();</script>';
-            //     } else {
+                if (!preg_match("/^[a-zA-Z., ]*$/", $nama)) {
+                    $_SESSION['namauser'] = 'Form Nama hanya boleh mengandung karakter huruf, spasi, titik(.) dan koma(,)';
+                    echo '<script language="javascript">window.history.back();</script>';
+                } else {
 
-            //         // if (!preg_match("/^[0-9. -]*$/", $nip)) {
-            //         //     $_SESSION['nipuser'] = 'Form NIP hanya boleh mengandung karakter angka, spasi dan minus(-)';
-            //         //     echo '<script language="javascript">window.history.back();</script>';
-            //         // } else {
+                    // if (!preg_match("/^[0-9. -]*$/", $nip)) {
+                    //     $_SESSION['nipuser'] = 'Form NIP hanya boleh mengandung karakter angka, spasi dan minus(-)';
+                    //     echo '<script language="javascript">window.history.back();</script>';
+                    // } else {
 
-            //             if (!preg_match("/^[2-3]*$/", $admin)) {
-            //                 $_SESSION['tipeuser'] = 'Form Tipe User hanya boleh mengandung karakter angka 2 atau 3';
-            //                 echo '<script language="javascript">window.history.back();</script>';
-            //             } else {
+                        if (!preg_match("/^[2-3]*$/", $admin)) {
+                            $_SESSION['tipeuser'] = 'Form Tipe User hanya boleh mengandung karakter angka 2 atau 3';
+                            echo '<script language="javascript">window.history.back();</script>';
+                        } else {
 
-            //                 $cek = mysqli_query($config, "SELECT * FROM tbl_user WHERE username='$username'");
-            //                 $result = mysqli_num_rows($cek);
+                            $cek = mysqli_query($config, "SELECT * FROM tbl_user WHERE username='$username'");
+                            $result = mysqli_num_rows($cek);
 
-            //                 if ($result > 0) {
-            //                     $_SESSION['errUsername'] = 'Username sudah terpakai, gunakan yang lain!';
-            //                     echo '<script language="javascript">window.history.back();</script>';
-            //                 } else {
+                            if ($result > 0) {
+                                $_SESSION['errUsername'] = 'Username sudah terpakai, gunakan yang lain!';
+                                echo '<script language="javascript">window.history.back();</script>';
+                            } else {
 
-            //                     if (strlen($username) < 3) {
-            //                         $_SESSION['errUser5'] = 'Username minimal 3 karakter!';
-            //                         echo '<script language="javascript">window.history.back();</script>';
-            //                     } else {
+                                if (strlen($username) < 3) {
+                                    $_SESSION['errUser5'] = 'Username minimal 3 karakter!';
+                                    echo '<script language="javascript">window.history.back();</script>';
+                                } else {
 
-            //                         if (strlen($password) < 3) {
-            //                             $_SESSION['errPassword'] = 'Password minimal 3 karakter!';
-            //                             echo '<script language="javascript">window.history.back();</script>';
-            //                         } else {
+                                    if (strlen($password) < 3) {
+                                        $_SESSION['errPassword'] = 'Password minimal 3 karakter!';
+                                        echo '<script language="javascript">window.history.back();</script>';
+                                    } else {
 
-            //                             $query = mysqli_query($config, "INSERT INTO tbl_user(username,password,nama,nip,admin) VALUES('$username',MD5('$password'),'$nama','$bidang','$admin')");
+                                        $nama_bidang = mysqli_query($config, "SELECT nama FROM `tbl_struktural` WHERE id_struk=$id_bidang")->fetch_row()[0];
+                                        
+                                        $query = mysqli_query($config, "INSERT INTO tbl_user(username,password,nama,nip,admin) VALUES('$username',MD5('$password'),'$nama','$nama_bidang','$admin')");
 
-            //                             if ($query != false) {
-            //                                 $_SESSION['succAdd'] = 'SUKSES! User baru berhasil ditambahkan';
-            //                                 header("Location: ./admin.php?page=sett&sub=usr");
-            //                                 die();
-            //                             } else {
-            //                                 $_SESSION['errQ'] = 'ERROR! Ada masalah dengan query';
-            //                                 echo '<script language="javascript">window.history.back();</script>';
-            //                             }
-            //                         }
-            //                     }
-            //                 }
-            //             }
-            //         // }
-            //     }
-            // }
+                                        if ($query != false) {
+                                            $_SESSION['succAdd'] = 'SUKSES! User baru berhasil ditambahkan';
+                                            header("Location: ./admin.php?page=sett&sub=usr");
+                                            die();
+                                        } else {
+                                            $_SESSION['errQ'] = 'ERROR! Ada masalah dengan query';
+                                            echo '<script language="javascript">window.history.back();</script>';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    // }
+                }
+            }
         }
     } else { ?>
 
@@ -205,7 +207,7 @@ if (empty($_SESSION['admin'])) {
                             include('include/config.php');
                             $rs = mysqli_query($config, "SELECT * FROM tbl_struktural");
                             while ($row = mysqli_fetch_array($rs)) {
-                                echo '<option value=' . $row['nama'] . '>' . $row['nama'] . '</option>';
+                                echo '<option value=' . $row['id_struk'] . '>' . $row['nama'] . '</option>';
                             }
                             ?>
                         </select>
