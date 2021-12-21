@@ -62,11 +62,6 @@
             				                    <td width="1%">:</td>
             				                    <td width="86%">'.$row['sifat'].'</td>
             				                </tr>
-            				                <tr>
-            				                    <td width="13%">Batas Waktu</td>
-            				                    <td width="1%">:</td>
-            				                    <td width="86%">'.date('d M Y', strtotime($row['batas_waktu'])).'</td>
-            				                </tr>
                                             <tr>
                                                 <td width="13%">Catatan</td>
                                                 <td width="1%">:</td>

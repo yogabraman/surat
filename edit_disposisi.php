@@ -66,7 +66,7 @@ if (empty($_SESSION['admin'])) {
                         $query = mysqli_query($config, "UPDATE tbl_disposisi SET tujuan='$tujuan', perintah='$perintah', isi_disposisi='$isi_disposisi', sifat='$sifat', tgl_dispo=NOW(), catatan='$catatan', id_surat='$id_surat', id_user='$id_user' WHERE id_disposisi='$id_disposisi'");
 
                         if ($query == true) {
-                            if($tipe==1){
+                            if ($tipe == 1) {
                                 $query_und = mysqli_query($config, "UPDATE tbl_agenda SET dispo='$tujuan' WHERE id_surat='$id_surat'");
                             }
                             $_SESSION['succEdit'] = 'SUKSES! Data berhasil diupdate';
@@ -86,31 +86,30 @@ if (empty($_SESSION['admin'])) {
     } else {
 
         $id_disposisi = mysqli_real_escape_string($config, $_REQUEST['id_disposisi']);
-        $query = mysqli_query($config, "SELECT * FROM tbl_disposisi WHERE id_disposisi='$id_disposisi'");
-        if (mysqli_num_rows($query) > 0) {
-            $no = 1;
-            while ($row = mysqli_fetch_array($query)) { ?>
-
-                <!-- Row Start -->
-                <div class="row">
-                    <!-- Secondary Nav START -->
-                    <div class="col s12">
-                        <nav class="secondary-nav">
-                            <div class="nav-wrapper blue-grey darken-1">
-                                <ul class="left">
-                                    <li class="waves-effect waves-light"><a href="#" class="judul"><i class="material-icons">edit</i> Edit Disposisi Surat</a></li>
-                                </ul>
-                            </div>
-                        </nav>
+        $query = mysqli_query($config, "SELECT id_disposisi, tujuan, perintah, isi_disposisi, sifat, tgl_dispo, catatan, id_surat, id_user FROM tbl_disposisi WHERE id_disposisi='$id_disposisi'");
+        list($id_disposisi, $tujuan, $perintah, $isi_disposisi, $sifat, $tgl_dispo, $catatan, $id_surat, $id_user) = mysqli_fetch_array($query);
+        // print_r(mysqli_fetch_array($query));
+?>
+        <!-- Row Start -->
+        <div class="row">
+            <!-- Secondary Nav START -->
+            <div class="col s12">
+                <nav class="secondary-nav">
+                    <div class="nav-wrapper blue-grey darken-1">
+                        <ul class="left">
+                            <li class="waves-effect waves-light"><a href="#" class="judul"><i class="material-icons">edit</i> Edit Disposisi Surat</a></li>
+                        </ul>
                     </div>
-                    <!-- Secondary Nav END -->
-                </div>
-                <!-- Row END -->
+                </nav>
+            </div>
+            <!-- Secondary Nav END -->
+        </div>
+        <!-- Row END -->
 
-                <?php
-                if (isset($_SESSION['errEmpty'])) {
-                    $errEmpty = $_SESSION['errEmpty'];
-                    echo '<div id="alert-message" class="row">
+        <?php
+        if (isset($_SESSION['errEmpty'])) {
+            $errEmpty = $_SESSION['errEmpty'];
+            echo '<div id="alert-message" class="row">
                                 <div class="col m12">
                                     <div class="card red lighten-5">
                                         <div class="card-content notif">
@@ -119,11 +118,11 @@ if (empty($_SESSION['admin'])) {
                                     </div>
                                 </div>
                             </div>';
-                    unset($_SESSION['errEmpty']);
-                }
-                if (isset($_SESSION['errQ'])) {
-                    $errQ = $_SESSION['errQ'];
-                    echo '<div id="alert-message" class="row">
+            unset($_SESSION['errEmpty']);
+        }
+        if (isset($_SESSION['errQ'])) {
+            $errQ = $_SESSION['errQ'];
+            echo '<div id="alert-message" class="row">
                                 <div class="col m12">
                                     <div class="card red lighten-5">
                                         <div class="card-content notif">
@@ -132,48 +131,68 @@ if (empty($_SESSION['admin'])) {
                                     </div>
                                 </div>
                             </div>';
-                    unset($_SESSION['errQ']);
-                }
-                ?>
+            unset($_SESSION['errQ']);
+        }
+        ?>
 
-                <!-- Row form Start -->
-                <div class="row jarak-form">
+        <!-- Row form Start -->
+        <div class="row jarak-form">
 
-                    <!-- Form START -->
-                    <form class="col s12" method="post" action="">
+            <!-- Form START -->
+            <form class="col s12" method="post" action="">
 
-                        <!-- Row in form START -->
-                        <div class="row">
-                            <input type="hidden" value="<?php echo $row['id_disposisi']; ?>">
-                            <div class="input-field col s6">
-                                <i class="material-icons prefix md-prefix">supervisor_account</i><label>Kepada Yth:</label><br />
+                <!-- Row in form START -->
+                <div class="row">
+                    <input type="hidden" value="<?php echo $id_disposisi; ?>">
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix md-prefix">supervisor_account</i><label>Kepada Yth:</label><br />
+                        <?php
+                        $query_struk = mysqli_query($config, "SELECT * FROM tbl_struktural");
+                        if (mysqli_num_rows($query_struk) > 0) {
+                            while ($row = mysqli_fetch_array($query_struk)) {
+                                if (in_array($row['nama'], json_decode($tujuan))) {
+                        ?>
+                                    <input id="struk_<?= $row['id_struk'] ?>" type="checkbox" class="validate" name="tujuan[]" value="<?= $row['nama'] ?>" checked>
+                                    <label for="struk_<?= $row['id_struk'] ?>"><?= $row['nama'] ?></label>
                                 <?php
-                                $query_struk = mysqli_query($config, "SELECT * FROM tbl_struktural");
-                                if (mysqli_num_rows($query_struk) > 0) {
-                                    while ($row = mysqli_fetch_array($query_struk)) {
+                                } else {
                                 ?>
-                                        <input id="struk_<?= $row['id_struk'] ?>" type="checkbox" class="validate" name="tujuan[]" value="<?= $row['nama'] ?>">
-                                        <label for="struk_<?= $row['id_struk'] ?>"><?= $row['nama'] ?></label>
+                                    <input id="struk_<?= $row['id_struk'] ?>" type="checkbox" class="validate" name="tujuan[]" value="<?= $row['nama'] ?>">
+                                    <label for="struk_<?= $row['id_struk'] ?>"><?= $row['nama'] ?></label>
                                 <?php
-                                    }
                                 }
                                 ?>
-                            </div>
-                            <div class="input-field col s6">
-                                <i class="material-icons prefix md-prefix">assignment</i><label>Untuk :</label><br />
+                        <?php
+                            }
+                        }
+                        ?>
+                    </div>
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix md-prefix">assignment</i><label>Untuk :</label><br />
+                        <?php
+                        $query_per = mysqli_query($config, "SELECT * FROM tbl_perintah");
+                        if (mysqli_num_rows($query_per) > 0) {
+                            while ($row = mysqli_fetch_array($query_per)) {
+                                if (in_array($row['perintah'], json_decode($perintah))) {
+                        ?>
+                                    <input id="<?= $row['id_perintah'] ?>" type="checkbox" class="validate" name="perintah[]" value="<?= $perintah ?>" checked>
+                                    <label for="<?= $row['id_perintah'] ?>"><?= $row['perintah'] ?></label>
                                 <?php
-                                $query_per = mysqli_query($config, "SELECT * FROM tbl_perintah");
-                                if (mysqli_num_rows($query_per) > 0) {
-                                    while ($row = mysqli_fetch_array($query_per)) {
+                                } else {
                                 ?>
-                                        <input id="<?= $row['id_perintah'] ?>" type="checkbox" class="validate" name="perintah[]" value="<?= $row['perintah'] ?>">
-                                        <label for="<?= $row['id_perintah'] ?>"><?= $row['perintah'] ?></label>
+                                    <input id="<?= $row['id_perintah'] ?>" type="checkbox" class="validate" name="perintah[]" value="<?= $perintah ?>">
+                                    <label for="<?= $row['id_perintah'] ?>"><?= $row['perintah'] ?></label>
                                 <?php
-                                    }
                                 }
                                 ?>
-                            </div>
-                            <!-- <div class="input-field col s6">
+
+                        <?php
+                            }
+                        }
+                        ?>
+                        <br><br><br>
+                    </div>
+                    <!-- <div class="input-field col s6">
                                 <i class="material-icons prefix md-prefix">alarm</i>
                                 <input id="tgl_dispo" type="text" name="tgl_dispo" class="datepicker" value="<?php echo $row['tgl_dispo']; ?>"required>
                                     <?php
@@ -185,69 +204,70 @@ if (empty($_SESSION['admin'])) {
                                     ?>
                                 <label for="tgl_dispo">Tanggal Disposisipo</label>
                             </div> -->
-                            <div class="input-field col s6">
-                                <i class="material-icons prefix md-prefix">description</i>
-                                <textarea id="isi_disposisi" class="materialize-textarea validate" name="isi_disposisi" required><?php echo $row['isi_disposisi']; ?></textarea>
-                                <?php
-                                if (isset($_SESSION['isi_disposisi'])) {
-                                    $isi_disposisi = $_SESSION['isi_disposisi'];
-                                    echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">' . $isi_disposisi . '</div>';
-                                    unset($_SESSION['isi_disposisi']);
-                                }
-                                ?>
-                                <label for="isi_disposisi">Isi Disposisi</label>
-                            </div>
-                            <div class="input-field col s6">
-                                <i class="material-icons prefix md-prefix">featured_play_list </i>
-                                <input id="catatan" type="text" class="validate" name="catatan" value="<?php echo $row['catatan']; ?>" required>
-                                <?php
-                                if (isset($_SESSION['catatan'])) {
-                                    $catatan = $_SESSION['catatan'];
-                                    echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">' . $catatan . '</div>';
-                                    unset($_SESSION['catatan']);
-                                }
-                                ?>
-                                <label for="catatan">Catatan</label>
-                            </div>
-                            <div class="input-field col s6">
-                                <i class="material-icons prefix md-prefix">low_priority</i><label>Pilih Sifat Disposisi</label><br />
-                                <div class="input-field col s11 right">
-                                    <select class="browser-default validate" name="sifat" id="sifat" required>
-                                        <option value="<?php echo $row['sifat']; ?>"><?php echo $row['sifat']; ?></option>
-                                        <option value="Biasa">Biasa</option>
-                                        <option value="Penting">Penting</option>
-                                        <option value="Segera">Segera</option>
-                                        <option value="Rahasia">Rahasia</option>
-                                    </select>
-                                </div>
-                                <?php
-                                if (isset($_SESSION['sifat'])) {
-                                    $sifat = $_SESSION['sifat'];
-                                    echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">' . $sifat . '</div>';
-                                    unset($_SESSION['sifat']);
-                                }
-                                ?>
-                            </div>
-                            <!-- Row in form END -->
 
-                            <div class="row">
-                                <div class="col 6">
-                                    <button type="submit" name="submit" class="btn-large blue waves-effect waves-light">SIMPAN <i class="material-icons">done</i></button>
-                                </div>
-                                <div class="col 6">
-                                    <a href="?page=tsm&act=disp&id_surat=<?php echo $row['id_surat']; ?>" class="btn-large deep-orange waves-effect waves-light">BATAL <i class="material-icons">clear</i></a>
-                                </div>
-                            </div>
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix md-prefix">description</i>
+                        <textarea id="isi_disposisi" class="materialize-textarea validate" name="isi_disposisi" required><?php echo $isi_disposisi; ?></textarea>
+                        <?php
+                        if (isset($_SESSION['isi_disposisi'])) {
+                            $isi_disposisi = $_SESSION['isi_disposisi'];
+                            echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">' . $isi_disposisi . '</div>';
+                            unset($_SESSION['isi_disposisi']);
+                        }
+                        ?>
+                        <label for="isi_disposisi">Isi Disposisi</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix md-prefix">featured_play_list </i>
+                        <input id="catatan" type="text" class="validate" name="catatan" value="<?php echo $catatan; ?>" required>
+                        <?php
+                        if (isset($_SESSION['catatan'])) {
+                            $catatan = $_SESSION['catatan'];
+                            echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">' . $catatan . '</div>';
+                            unset($_SESSION['catatan']);
+                        }
+                        ?>
+                        <label for="catatan">Catatan</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix md-prefix">low_priority</i><label>Pilih Sifat Disposisi</label><br />
+                        <div class="input-field col s11 right">
+                            <select class="browser-default validate" name="sifat" id="sifat" required>
+                                <option value="<?php echo $row['sifat']; ?>"><?php echo $sifat; ?></option>
+                                <option value="Biasa">Biasa</option>
+                                <option value="Penting">Penting</option>
+                                <option value="Segera">Segera</option>
+                                <option value="Rahasia">Rahasia</option>
+                            </select>
+                        </div>
+                        <?php
+                        if (isset($_SESSION['sifat'])) {
+                            $sifat = $_SESSION['sifat'];
+                            echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">' . $sifat . '</div>';
+                            unset($_SESSION['sifat']);
+                        }
+                        ?>
+                    </div>
+                    <!-- Row in form END -->
 
-                    </form>
-                    <!-- Form END -->
+                    <div class="row">
+                        <div class="col 6">
+                            <button type="submit" name="submit" class="btn-large blue waves-effect waves-light">SIMPAN <i class="material-icons">done</i></button>
+                        </div>
+                        <div class="col 6">
+                            <a href="?page=tsm&act=disp&id_surat=<?php echo $row['id_surat']; ?>" class="btn-large deep-orange waves-effect waves-light">BATAL <i class="material-icons">clear</i></a>
+                        </div>
+                    </div>
 
-                </div>
-                <!-- Row form END -->
+            </form>
+            <!-- Form END -->
+
+        </div>
+        <!-- Row form END -->
+
+
 
 <?php
-            }
-        }
     }
 }
 ?>
