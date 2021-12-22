@@ -20,10 +20,10 @@ if (empty($_SESSION['admin'])) {
                     include "tambah_spt.php";
                     break;
                 case 'edit':
-                    include "edit_agenda.php";
+                    include "edit_spt.php";
                     break;
                 case 'del':
-                    include "hapus_agenda.php";
+                    include "hapus_spt.php";
                     break;
             }
         } else {
@@ -48,9 +48,9 @@ if (empty($_SESSION['admin'])) {
                             <div class="nav-wrapper blue-grey darken-1">
                                 <div class="col m6">
                                     <ul class="left">
-                                        <li class="waves-effect waves-light hide-on-small-only"><a href="?page=txa" class="judul"><i class="material-icons">event</i> Kegiatan</a></li>
+                                        <li class="waves-effect waves-light hide-on-small-only"><a href="?page=spt" class="judul"><i class="material-icons">event</i> SPT</a></li>
                                         <?php
-                                        if ($_SESSION['admin'] == 2 ) {
+                                        if ($_SESSION['admin'] == 2) {
                                             echo '';
                                         } else {
                                             echo '
@@ -62,26 +62,17 @@ if (empty($_SESSION['admin'])) {
                                         ?>
                                     </ul>
                                 </div>
-
                                 <div class="col m6 hide-on-med-and-down">
-                                    <form method="post" action="?page=txa">
+                                    <form method="post" action="?page=spt">
                                         <div class="input-field round-in-box">
                                             <input id="search" type="search" name="cari" placeholder="Ketik dan tekan enter mencari data..." required>
+                                            <input type="hidden" name="dari_tanggal" value="<?php echo $_REQUEST['dari_tanggal']; ?>">
+                                            <input type="hidden" name="sampai_tanggal" value="<?php echo $_REQUEST['sampai_tanggal']; ?>">
                                             <label for="search"><i class="material-icons">search</i></label>
-                                            <input type="submit" name="submit" class="hidden">
+                                            <input type="submit" name="search" class="hidden">
                                         </div>
                                     </form>
                                 </div>
-
-                                <!-- <div class="col m3">
-                                    <select class="browser-default validate" name="agenda" style="opacity: 60%">
-                                        <option value="semua">semua</option>
-                                        <option value="5">belum disposisi</option>
-                                        <option value="1">sudah disposisi</option>
-                                        <option value="2">semua</option>
-                                    </select>
-                                </div> -->
-
                             </div>
                         </nav>
                     </div>
@@ -137,13 +128,39 @@ if (empty($_SESSION['admin'])) {
 
     <?php
             //script untuk mencari data
-            if (isset($_REQUEST['submit'])) {
+            if (isset($_REQUEST['search'])) {
+                $dari_tanggal = $_REQUEST['dari_tanggal'];
+                $sampai_tanggal = $_REQUEST['sampai_tanggal'];
+
+                echo'
+                    <!-- Row form Start -->
+                    <div class="row jarak-form black-text">
+                        <form class="col s12" method="post" action="">
+                            <div class="input-field col s3">
+                                <i class="material-icons prefix md-prefix">date_range</i>
+                                <input id="dari_tanggal" type="text" name="dari_tanggal" id="dari_tanggal" required>
+                                <label for="dari_tanggal">Dari Tanggal</label>
+                            </div>
+                            <div class="input-field col s3">
+                                <i class="material-icons prefix md-prefix">date_range</i>
+                                <input id="sampai_tanggal" type="text" name="sampai_tanggal" id="sampai_tanggal" required>
+                                <label for="sampai_tanggal">Sampai Tanggal</label>
+                            </div>
+                            <div class="col s6">
+                                <input type="hidden" name="dari_tanggal" value="'.$_REQUEST['dari_tanggal'].'">
+                                <input type="hidden" name="sampai_tanggal" value="'.$_REQUEST['sampai_tanggal'].'">
+                                <button type="submit" name="submit" class="btn-large blue waves-effect waves-light"> TAMPILKAN <i class="material-icons">visibility</i></button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- Row form END -->';
+                
                 $cari = mysqli_real_escape_string($config, $_REQUEST['cari']);
                 echo '
                         <div class="col s12" style="margin-top: -18px;">
                             <div class="card blue lighten-5">
                                 <div class="card-content">
-                                <p class="description">Hasil pencarian untuk kata kunci <strong>"' . stripslashes($cari) . '"</strong><span class="right"><a href="?page=txa"><i class="material-icons md-36" style="color: #333;">clear</i></a></span></p>
+                                <p class="description">Hasil pencarian untuk kata kunci <strong>"' . stripslashes($cari) . '"</strong><span class="right"></span></p>
                                 </div>
                             </div>
                         </div>
@@ -152,12 +169,10 @@ if (empty($_SESSION['admin'])) {
                         <table class="bordered" id="tbl">
                             <thead class="blue lighten-4" id="head">
                                 <tr>
-                                    <th width="20%">Tanggal</th>
-                                    <th width="8%">Waktu</th>
-                                    <th width="11%">Dari</th>
-                                    <th width="15%">Tempat</th>
-                                    <th width="20%">Acara</th>
-                                    <th width="8%">Dispo</th>
+                                    <th width="20%">Tgl Berangkat</th>
+                                    <th width="20%">Tgl Pulang</th>
+                                    <th width="22%">Pegawai</th>
+                                    <th width="20%">Tujuan</th>
                                     <th width="18%">Tindakan <span class="right"><i class="material-icons" style="color: #333;">settings</i></span></th>
                                 </tr>
                             </thead>
@@ -165,13 +180,14 @@ if (empty($_SESSION['admin'])) {
                                 <tr>';
 
                 //script untuk mencari data
-                $query = mysqli_query($config, "SELECT * FROM tbl_agenda WHERE (asal LIKE '%$cari%') OR (tempat LIKE '%$cari%') OR (isi LIKE '%$cari%') ORDER by id_agenda DESC LIMIT $curr, $limit");
+                $query = mysqli_query($config, "SELECT * FROM tbl_spt WHERE (pegawai LIKE '%$cari%') AND ((tgl_berangkat BETWEEN '$dari_tanggal' AND '$sampai_tanggal') OR (tgl_pulang BETWEEN '$dari_tanggal' AND '$sampai_tanggal')) ORDER by id_spt DESC LIMIT $curr, $limit");
                 if (mysqli_num_rows($query) > 0) {
                     $no = 1;
                     while ($row = mysqli_fetch_array($query)) {
-                        $y = substr($row['tgl_agenda'], 0, 4);
-                        $m = substr($row['tgl_agenda'], 5, 2);
-                        $d = substr($row['tgl_agenda'], 8, 2);
+                        //tgl berangkat
+                        $y = substr($row['tgl_berangkat'], 0, 4);
+                        $m = substr($row['tgl_berangkat'], 5, 2);
+                        $d = substr($row['tgl_berangkat'], 8, 2);
 
                         if ($m == "01") {
                             $nm = "Januari";
@@ -198,23 +214,48 @@ if (empty($_SESSION['admin'])) {
                         } elseif ($m == "12") {
                             $nm = "Desember";
                         }
+
+                        //tgl pulang
+                        $y2 = substr($row['tgl_pulang'], 0, 4);
+                        $m2 = substr($row['tgl_pulang'], 5, 2);
+                        $d2 = substr($row['tgl_pulang'], 8, 2);
+
+                        if ($m2 == "01") {
+                            $nm2 = "Januari";
+                        } elseif ($m2 == "02") {
+                            $nm2 = "Februari";
+                        } elseif ($m2 == "03") {
+                            $nm2 = "Maret";
+                        } elseif ($m2 == "04") {
+                            $nm2 = "April";
+                        } elseif ($m2 == "05") {
+                            $nm2 = "Mei";
+                        } elseif ($m2 == "06") {
+                            $nm2 = "Juni";
+                        } elseif ($m2 == "07") {
+                            $nm2 = "Juli";
+                        } elseif ($m2 == "08") {
+                            $nm2 = "Agustus";
+                        } elseif ($m2 == "09") {
+                            $nm2 = "September";
+                        } elseif ($m2 == "10") {
+                            $nm2 = "Oktober";
+                        } elseif ($m2 == "11") {
+                            $nm2 = "November";
+                        } elseif ($m2 == "12") {
+                            $nm2 = "Desember";
+                        }
                         echo '
 
-                                        <td>' . $d . " " . $nm . " " . $y . '</td>';
-                                        $disp = json_decode($row['dispo']);
-                        echo '
-                                        <td>' . substr($row['waktu_agenda'], 0, 5) . '</td>
-                                        <td>' . $row['asal'] . '</td>
-                                        <td>' . $row['tempat'] . '</td>
-                                        <td>' . substr($row['isi'], 0, 200) . '
-                                        <td>' . implode("<br>",$disp) . '
+                                        <td>' . $d . " " . $nm . " " . $y . '</td>
+                                        <td>' . $d2 . " " . $nm . " " . $y2 . '</td>
+                                        <td>' . $row['pegawai'] . '</td>
+                                        <td>' . $row['tujuan'] . '</td>
                                         <td>';
-
-
                         echo '
-                                        <a class="btn small blue waves-effect waves-light" href="?page=txa&act=edit&id_agenda=' . $row['id_agenda'] . '">
+                                        <a class="btn small blue waves-effect waves-light" href="?page=spt&act=edit&id_spt=' . $row['id_spt'] . '&dari_tanggal='.$dari_tanggal.'&sampai_tanggal='.$sampai_tanggal.'">
                                         <i class="material-icons">edit</i> EDIT</a>
-                                        <a class="btn small deep-orange waves-effect waves-light" href="?page=txa&act=del&id_agenda=' . $row['id_agenda'] . '">
+                                        <a class="btn small deep-orange waves-effect waves-light" href="?page=spt&act=del&id_spt=' . $row['id_spt'] . '&dari_tanggal='.$dari_tanggal.'&sampai_tanggal='.$sampai_tanggal.'">
                                         <i class="material-icons">delete</i> DEL</a>';
                         echo '
                                         </td>
@@ -229,7 +270,7 @@ if (empty($_SESSION['admin'])) {
                     </div>
                     <!-- Row form END -->';
 
-                $query = mysqli_query($config, "SELECT * FROM tbl_surat_masuk");
+                $query = mysqli_query($config, "SELECT * FROM tbl_spt");
                 $cdata = mysqli_num_rows($query);
                 $cpg = ceil($cdata / $limit);
 
@@ -241,8 +282,8 @@ if (empty($_SESSION['admin'])) {
                     //first and previous pagging
                     if ($pg > 1) {
                         $prev = $pg - 1;
-                        echo '<li><a href="?page=txa&pg=1"><i class="material-icons md-48">first_page</i></a></li>
-                                  <li><a href="?page=txa&pg=' . $prev . '"><i class="material-icons md-48">chevron_left</i></a></li>';
+                        echo '<li><a href="?page=spt&pg=1"><i class="material-icons md-48">first_page</i></a></li>
+                                  <li><a href="?page=spt&pg=' . $prev . '"><i class="material-icons md-48">chevron_left</i></a></li>';
                     } else {
                         echo '<li class="disabled"><a href=""><i class="material-icons md-48">first_page</i></a></li>
                                   <li class="disabled"><a href=""><i class="material-icons md-48">chevron_left</i></a></li>';
@@ -251,16 +292,16 @@ if (empty($_SESSION['admin'])) {
                     //perulangan pagging
                     for ($i = 1; $i <= $cpg; $i++)
                         if ($i != $pg) {
-                            echo '<li class="waves-effect waves-dark"><a href="?page=txa&pg=' . $i . '"> ' . $i . ' </a></li>';
+                            echo '<li class="waves-effect waves-dark"><a href="?page=spt&pg=' . $i . '"> ' . $i . ' </a></li>';
                         } else {
-                            echo '<li class="active waves-effect waves-dark"><a href="?page=txa&pg=' . $i . '"> ' . $i . ' </a></li>';
+                            echo '<li class="active waves-effect waves-dark"><a href="?page=spt&pg=' . $i . '"> ' . $i . ' </a></li>';
                         }
 
                     //last and next pagging
                     if ($pg < $cpg) {
                         $next = $pg + 1;
-                        echo '<li><a href="?page=txa&pg=' . $next . '"><i class="material-icons md-48">chevron_right</i></a></li>
-                                  <li><a href="?page=txa&pg=' . $cpg . '"><i class="material-icons md-48">last_page</i></a></li>';
+                        echo '<li><a href="?page=spt&pg=' . $next . '"><i class="material-icons md-48">chevron_right</i></a></li>
+                                  <li><a href="?page=spt&pg=' . $cpg . '"><i class="material-icons md-48">last_page</i></a></li>';
                     } else {
                         echo '<li class="disabled"><a href=""><i class="material-icons md-48">chevron_right</i></a></li>
                                   <li class="disabled"><a href=""><i class="material-icons md-48">last_page</i></a></li>';
@@ -271,21 +312,17 @@ if (empty($_SESSION['admin'])) {
                 } else {
                     echo '';
                 }
-            } else {
-
-                //Tampilan Awal Surat Masuk
-                echo '
-                        
+            } elseif (isset($_REQUEST['submit'])) {
+                //Tampilan Awal SPT
+                echo '  
                         <div class="col m12" id="colres">
                             <table class="bordered" id="tbl">
                                 <thead class="blue lighten-4" id="head">
                                     <tr>
-                                        <th width="15%">Tanggal</th>
-                                        <th width="8%">Waktu</th>
-                                        <th width="14%">Dari</th>
-                                        <th width="15%">Tempat</th>
-                                        <th width="18%">Acara</th>
-                                        <th width="12%">Dispo</th>
+                                        <th width="20%">Tgl Berangkat</th>
+                                        <th width="20%">Tgl Pulang</th>
+                                        <th width="22%">Pegawai</th>
+                                        <th width="20%">Tujuan</th>
                                         <th width="18%">Tindakan <span class="right tooltipped" data-position="left" data-tooltip="Atur jumlah data yang ditampilkan"><a class="modal-trigger" href="#modal"><i class="material-icons" style="color: #333;">settings</i></a></span></th>
 
                                         <div id="modal" class="modal">
@@ -320,7 +357,7 @@ if (empty($_SESSION['admin'])) {
 
                     $query = mysqli_query($config, "UPDATE tbl_sett SET surat_masuk='$surat_masuk',id_user='$id_user' WHERE id_sett='$id_sett'");
                     if ($query == true) {
-                        header("Location: ./admin.php?page=txa");
+                        header("Location: ./admin.php?page=spt");
                         die();
                     }
                 }
@@ -339,13 +376,38 @@ if (empty($_SESSION['admin'])) {
                                     <tr>';
 
                 //script untuk menampilkan data
-                $query = mysqli_query($config, "SELECT * FROM tbl_agenda ORDER by id_agenda DESC LIMIT $curr, $limit");
+                $dari_tanggal = $_REQUEST['dari_tanggal'];
+                $sampai_tanggal = $_REQUEST['sampai_tanggal'];
+
+                echo'
+                    <!-- Row form Start -->
+                    <div class="row jarak-form black-text">
+                        <form class="col s12" method="post" action="">
+                            <div class="input-field col s3">
+                                <i class="material-icons prefix md-prefix">date_range</i>
+                                <input id="dari_tanggal" type="text" name="dari_tanggal" id="dari_tanggal" required>
+                                <label for="dari_tanggal">Dari Tanggal</label>
+                            </div>
+                            <div class="input-field col s3">
+                                <i class="material-icons prefix md-prefix">date_range</i>
+                                <input id="sampai_tanggal" type="text" name="sampai_tanggal" id="sampai_tanggal" required>
+                                <label for="sampai_tanggal">Sampai Tanggal</label>
+                            </div>
+                            <div class="col s6">
+                                <button type="submit" name="submit" class="btn-large blue waves-effect waves-light"> TAMPILKAN <i class="material-icons">visibility</i></button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- Row form END -->';
+                
+                $query = mysqli_query($config, "SELECT * FROM tbl_spt WHERE (tgl_berangkat BETWEEN '$dari_tanggal' AND '$sampai_tanggal') OR (tgl_pulang BETWEEN '$dari_tanggal' AND '$sampai_tanggal') ORDER by id_spt DESC LIMIT $curr, $limit");
                 if (mysqli_num_rows($query) > 0) {
                     $no = 1;
                     while ($row = mysqli_fetch_array($query)) {
-                        $y = substr($row['tgl_agenda'], 0, 4);
-                        $m = substr($row['tgl_agenda'], 5, 2);
-                        $d = substr($row['tgl_agenda'], 8, 2);
+                        //tgl berangkat
+                        $y = substr($row['tgl_berangkat'], 0, 4);
+                        $m = substr($row['tgl_berangkat'], 5, 2);
+                        $d = substr($row['tgl_berangkat'], 8, 2);
 
                         if ($m == "01") {
                             $nm = "Januari";
@@ -372,24 +434,48 @@ if (empty($_SESSION['admin'])) {
                         } elseif ($m == "12") {
                             $nm = "Desember";
                         }
-                        echo '
 
-                                        <td>' . $d . " " . $nm . " " . $y . '</td>';
-                                        $disp = !empty($row['dispo']) ? implode("<br>",json_decode($row['dispo'])): "";
-                                        // $disp = json_decode($row['dispo']);
+                        //tgl pulang
+                        $y2 = substr($row['tgl_pulang'], 0, 4);
+                        $m2 = substr($row['tgl_pulang'], 5, 2);
+                        $d2 = substr($row['tgl_pulang'], 8, 2);
+
+                        if ($m2 == "01") {
+                            $nm2 = "Januari";
+                        } elseif ($m2 == "02") {
+                            $nm2 = "Februari";
+                        } elseif ($m2 == "03") {
+                            $nm2 = "Maret";
+                        } elseif ($m2 == "04") {
+                            $nm2 = "April";
+                        } elseif ($m2 == "05") {
+                            $nm2 = "Mei";
+                        } elseif ($m2 == "06") {
+                            $nm2 = "Juni";
+                        } elseif ($m2 == "07") {
+                            $nm2 = "Juli";
+                        } elseif ($m2 == "08") {
+                            $nm2 = "Agustus";
+                        } elseif ($m2 == "09") {
+                            $nm2 = "September";
+                        } elseif ($m2 == "10") {
+                            $nm2 = "Oktober";
+                        } elseif ($m2 == "11") {
+                            $nm2 = "November";
+                        } elseif ($m2 == "12") {
+                            $nm2 = "Desember";
+                        }
+
                         echo '
-                                        <td>' . substr($row['waktu_agenda'], 0, 5) . '</td>
-                                        <td>' . $row['asal'] . '</td>
-                                        <td>' . $row['tempat'] . '</td>
-                                        <td>' . substr($row['isi'], 0, 200) . '
-                                        <td>' . $disp . '
+                                        <td>' . $d . " " . $nm . " " . $y . '</td>
+                                        <td>' . $d2 . " " . $nm2 . " " . $y2 . '</td>
+                                        <td>' . $row['pegawai'] . '</td>
+                                        <td>' . $row['tujuan'] . '</td>
                                         <td>';
-
-
                         echo '
-                                        <a class="btn small blue waves-effect waves-light" href="?page=txa&act=edit&id_agenda=' . $row['id_agenda'] . '">
+                                        <a class="btn small blue waves-effect waves-light" href="?page=spt&act=edit&id_spt=' . $row['id_spt'] . '">
                                         <i class="material-icons">edit</i> EDIT</a>
-                                        <a class="btn small deep-orange waves-effect waves-light" href="?page=txa&act=del&id_agenda=' . $row['id_agenda'] . '">
+                                        <a class="btn small deep-orange waves-effect waves-light" href="?page=spt&act=del&id_spt=' . $row['id_spt'] . '">
                                         <i class="material-icons">delete</i> DEL</a>';
                         echo '
                                         </td>
@@ -404,7 +490,7 @@ if (empty($_SESSION['admin'])) {
                     </div>
                     <!-- Row form END -->';
 
-                $query = mysqli_query($config, "SELECT * FROM tbl_surat_masuk");
+                $query = mysqli_query($config, "SELECT * FROM tbl_spt");
                 $cdata = mysqli_num_rows($query);
                 $cpg = ceil($cdata / $limit);
 
@@ -416,8 +502,8 @@ if (empty($_SESSION['admin'])) {
                     //first and previous pagging
                     if ($pg > 1) {
                         $prev = $pg - 1;
-                        echo '<li><a href="?page=txa&pg=1"><i class="material-icons md-48">first_page</i></a></li>
-                                  <li><a href="?page=txa&pg=' . $prev . '"><i class="material-icons md-48">chevron_left</i></a></li>';
+                        echo '<li><a href="?page=spt&pg=1"><i class="material-icons md-48">first_page</i></a></li>
+                                  <li><a href="?page=spt&pg=' . $prev . '"><i class="material-icons md-48">chevron_left</i></a></li>';
                     } else {
                         echo '<li class="disabled"><a href=""><i class="material-icons md-48">first_page</i></a></li>
                                   <li class="disabled"><a href=""><i class="material-icons md-48">chevron_left</i></a></li>';
@@ -426,16 +512,16 @@ if (empty($_SESSION['admin'])) {
                     //perulangan pagging
                     for ($i = 1; $i <= $cpg; $i++)
                         if ($i != $pg) {
-                            echo '<li class="waves-effect waves-dark"><a href="?page=txa&pg=' . $i . '"> ' . $i . ' </a></li>';
+                            echo '<li class="waves-effect waves-dark"><a href="?page=spt&pg=' . $i . '"> ' . $i . ' </a></li>';
                         } else {
-                            echo '<li class="active waves-effect waves-dark"><a href="?page=txa&pg=' . $i . '"> ' . $i . ' </a></li>';
+                            echo '<li class="active waves-effect waves-dark"><a href="?page=spt&pg=' . $i . '"> ' . $i . ' </a></li>';
                         }
 
                     //last and next pagging
                     if ($pg < $cpg) {
                         $next = $pg + 1;
-                        echo '<li><a href="?page=txa&pg=' . $next . '"><i class="material-icons md-48">chevron_right</i></a></li>
-                                  <li><a href="?page=txa&pg=' . $cpg . '"><i class="material-icons md-48">last_page</i></a></li>';
+                        echo '<li><a href="?page=spt&pg=' . $next . '"><i class="material-icons md-48">chevron_right</i></a></li>
+                                  <li><a href="?page=spt&pg=' . $cpg . '"><i class="material-icons md-48">last_page</i></a></li>';
                     } else {
                         echo '<li class="disabled"><a href=""><i class="material-icons md-48">chevron_right</i></a></li>
                                   <li class="disabled"><a href=""><i class="material-icons md-48">last_page</i></a></li>';
@@ -446,6 +532,28 @@ if (empty($_SESSION['admin'])) {
                 } else {
                     echo '';
                 }
+            } else {
+                //blank page selection dates
+                echo '
+                <!-- Row form Start -->
+                <div class="row jarak-form black-text">
+                    <form class="col s12" method="post" action="">
+                        <div class="input-field col s3">
+                            <i class="material-icons prefix md-prefix">date_range</i>
+                            <input id="dari_tanggal" type="text" name="dari_tanggal" id="dari_tanggal" required>
+                            <label for="dari_tanggal">Dari Tanggal</label>
+                        </div>
+                        <div class="input-field col s3">
+                            <i class="material-icons prefix md-prefix">date_range</i>
+                            <input id="sampai_tanggal" type="text" name="sampai_tanggal" id="sampai_tanggal" required>
+                            <label for="sampai_tanggal">Sampai Tanggal</label>
+                        </div>
+                        <div class="col s6">
+                            <button type="submit" name="submit" class="btn-large blue waves-effect waves-light"> TAMPILKAN <i class="material-icons">visibility</i></button>
+                        </div>
+                    </form>
+                </div>
+                <!-- Row form END -->';
             }
         }
     }

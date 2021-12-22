@@ -10,64 +10,47 @@ if (empty($_SESSION['admin'])) {
 
         //validasi form kosong
         if (
-            $_REQUEST['tgl_acara'] == "" ||
-            $_REQUEST['wkt_acara'] == "" ||
-            $_REQUEST['tempat'] == "" ||
-            $_REQUEST['dari'] == "" ||
-            $_REQUEST['isi'] == ""
+            $_REQUEST['tgl_berangkat'] == "" ||
+            $_REQUEST['pegawai'] == "" ||
+            $_REQUEST['tgl_pulang'] == "" ||
+            $_REQUEST['nama_kab'] == ""
         ) {
             $_SESSION['errEmpty'] = 'ERROR! Semua form wajib diisi';
             echo '<script language="javascript">window.history.back();</script>';
         } else {
 
-            $tgl_acara = $_REQUEST['tgl_acara'];
-            $wkt_acara = $_REQUEST['wkt_acara'];
-            $tempat = $_REQUEST['tempat'];
-            $dari = $_REQUEST['dari'];
-            $isi = $_REQUEST['isi'];
-            $id_user = $_SESSION['id_user'];
-            $bidang = json_encode(array($_SESSION['nip']));
+            $tgl_berangkat = $_REQUEST['tgl_berangkat'];
+            $pegawai = $_REQUEST['pegawai'];
+            $tgl_pulang = $_REQUEST['tgl_pulang'];
+            $tujuan = $_REQUEST['nama_kab'];
 
-            //validasi input data
-            if (!preg_match("/^[0-9.-]*$/", $tgl_acara)) {
-                $_SESSION['tgl_acara'] = 'Form Tanggal Surat hanya boleh mengandung angka dan minus(-)';
+            //cek tanggal berangkat
+            $cek_brgkt = mysqli_query($config, "SELECT * FROM `tbl_spt` WHERE pegawai LIKE '%$pegawai%' AND ((tgl_berangkat='$tgl_berangkat') OR (tgl_pulang='$tgl_berangkat'))");
+            $result1 = mysqli_num_rows($cek_brgkt);
+
+            if ($result1 > 0) {
+                $_SESSION['tgl_berangkat'] = 'Tanggal sudah dipakai!';
                 echo '<script language="javascript">window.history.back();</script>';
             } else {
+                //cek tanggal pulang
+                $cek_plg = mysqli_query($config, "SELECT * FROM `tbl_spt` WHERE pegawai LIKE '%$pegawai%' AND ((tgl_berangkat='$tgl_pulang') OR (tgl_pulang='$tgl_pulang'))");
+                $result2 = mysqli_num_rows($cek_plg);
 
-                if (!preg_match("/^[0-9.-:]*$/", $wkt_acara)) {
-                    $_SESSION['wkt_acara'] = 'Form Waktu Acara kurang benar';
+                if ($result2 > 0) {
+                    $_SESSION['tgl_pulang'] = 'Tanggal sudah dipakai!';
                     echo '<script language="javascript">window.history.back();</script>';
                 } else {
+                    //tombol simpan akan mengeksekusi script dibawah ini
+                    $query = mysqli_query($config, "INSERT INTO tbl_spt(tgl_berangkat,tgl_pulang,pegawai,tujuan) 
+                    VALUES('$tgl_berangkat','$tgl_pulang','$pegawai','$tujuan')");
 
-                    if (!preg_match("/^[a-zA-Z0-9.,() \/ -]*$/", $tempat)) {
-                        $_SESSION['tempat'] = 'Form Asal Surat hanya boleh mengandung karakter huruf, angka, spasi, titik(.), koma(,), minus(-),kurung() dan garis miring(/)';
-                        echo '<script language="javascript">window.history.back();</script>';
+                    if ($query == true) {
+                        $_SESSION['succAdd'] = 'SUKSES! Data berhasil ditambahkan';
+                        header("Location: ./admin.php?page=spt");
+                        die();
                     } else {
-
-                        if (!preg_match("/^[a-zA-Z0-9.,()\/ -]*$/", $dari)) {
-                            $_SESSION['dari'] = 'Form Isi Ringkas hanya boleh mengandung karakter huruf, angka, spasi, titik(.), koma(,), minus(-), garis miring(/), kurung(), underscore(_), dan(&) persen(%) dan at(@)';
-                            echo '<script language="javascript">window.history.back();</script>';
-                        } else {
-
-                            if (!preg_match("/^[a-zA-Z0-9.,_()%&@\/\r\n -]*$/", $isi)) {
-                                $_SESSION['isi'] = 'Form Isi Ringkas hanya boleh mengandung karakter huruf, angka, spasi, titik(.), koma(,), minus(-), garis miring(/), kurung(), underscore(_), dan(&) persen(%) dan at(@)';
-                                echo '<script language="javascript">window.history.back();</script>';
-                            } else {
-
-                                //tombol simpan akan mengeksekusi script dibawah ini
-                                $query = mysqli_query($config, "INSERT INTO tbl_agenda(asal,isi,tgl_agenda,waktu_agenda,tempat,dispo,id_user)
-                                VALUES('$dari','$isi','$tgl_acara','$wkt_acara','$tempat','$bidang','$id_user')");
-
-                                if ($query == true) {
-                                    $_SESSION['succAdd'] = 'SUKSES! Data berhasil ditambahkan';
-                                    header("Location: ./admin.php?page=txa");
-                                    die();
-                                } else {
-                                    $_SESSION['errQ'] = 'ERROR! Ada masalah dengan query';
-                                    echo '<script language="javascript">window.history.back();</script>';
-                                }
-                            }
-                        }
+                        $_SESSION['errQ'] = 'ERROR! Ada masalah dengan query';
+                        echo '<script language="javascript">window.history.back();</script>';
                     }
                 }
             }
@@ -81,7 +64,7 @@ if (empty($_SESSION['admin'])) {
                 <nav class="secondary-nav">
                     <div class="nav-wrapper blue-grey darken-1">
                         <ul class="left">
-                            <li class="waves-effect waves-light"><a href="?page=txa&act=add" class="judul"><i class="material-icons">event</i> Tambah Data Agenda</a></li>
+                            <li class="waves-effect waves-light"><a href="?page=spt&act=add" class="judul"><i class="material-icons">event</i> Tambah SPT</a></li>
                         </ul>
                     </div>
                 </nav>
@@ -122,74 +105,57 @@ if (empty($_SESSION['admin'])) {
         <!-- Row form Start -->
         <div class="row jarak-form">
 
-            <!-- Form START -->
-            <!-- <?php
-                print_r(array($_SESSION['nip']));
-            ?> -->
-            <form class="col s12" method="POST" action="?page=txa&act=add" enctype="multipart/form-data">
+            <form class="col s12" method="POST" action="?page=spt&act=add" enctype="multipart/form-data">
 
                 <!-- Row in form START -->
                 <div class="row">
                     <div class="input-field col s6">
                         <i class="material-icons prefix md-prefix">date_range</i>
-                        <input id="tgl_spt" type="text" name="tgl_spt" class="datepicker" required>
+                        <input id="tgl_berangkat" type="text" name="tgl_berangkat" class="datepicker" required>
                         <?php
-                        if (isset($_SESSION['tgl_acara'])) {
-                            $tgl_acara = $_SESSION['tgl_acara'];
-                            echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">' . $tgl_acara . '</div>';
-                            unset($_SESSION['tgl_acara']);
+                        if (isset($_SESSION['tgl_berangkat'])) {
+                            $tgl_berangkat = $_SESSION['tgl_berangkat'];
+                            echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">' . $tgl_berangkat . '</div>';
+                            unset($_SESSION['tgl_berangkat']);
                         }
                         ?>
-                        <label for="tgl_acara">Tanggal Acara</label>
+                        <label for="tgl_berangkat">Tanggal Berangkat</label>
                     </div>
-
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix md-prefix">people</i>
+                        <input id="pegawai" type="text" class="validate" name="pegawai" required>
+                        <?php
+                        if (isset($_SESSION['pegawai'])) {
+                            $pegawai = $_SESSION['pegawai'];
+                            echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">' . $pegawai . '</div>';
+                            unset($_SESSION['pegawai']);
+                        }
+                        ?>
+                        <label for="pegawai">Pegawai</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <i class="material-icons prefix md-prefix">date_range</i>
+                        <input id="tgl_pulang" type="text" name="tgl_pulang" class="datepicker" required>
+                        <?php
+                        if (isset($_SESSION['tgl_pulang'])) {
+                            $tgl_pulang = $_SESSION['tgl_pulang'];
+                            echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">' . $tgl_pulang . '</div>';
+                            unset($_SESSION['tgl_pulang']);
+                        }
+                        ?>
+                        <label for="tgl_pulang">Tanggal Pulang</label>
+                    </div>
                     <div class="input-field col s6">
                         <i class="material-icons prefix md-prefix">place</i>
-                        <input id="tempat" type="text" class="validate" name="tempat" required>
+                        <input id="nama_kab" type="text" class="validate" name="nama_kab" required>
                         <?php
-                        if (isset($_SESSION['tempat'])) {
-                            $tempat = $_SESSION['tempat'];
-                            echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">' . $tempat . '</div>';
-                            unset($_SESSION['tempat']);
+                        if (isset($_SESSION['tujuan'])) {
+                            $tujuan = $_SESSION['tujuan'];
+                            echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">' . $tujuan . '</div>';
+                            unset($_SESSION['tujuan']);
                         }
                         ?>
-                        <label for="tempat">Tempat Acara</label>
-                    </div>
-
-                    <div class="input-field col s6">
-                        <i class="material-icons prefix md-prefix">alarm</i><br><br><label>Waktu Acara :</label>
-                        <input id="wkt_acara" type="time" name="wkt_acara" class="" required>
-                        <?php
-                        if (isset($_SESSION['wkt_acara'])) {
-                            $wkt_acara = $_SESSION['wkt_acara'];
-                            echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">' . $wkt_acara . '</div>';
-                            unset($_SESSION['wkt_acara']);
-                        }
-                        ?>
-                    </div>
-                    <div class="input-field col s6">
-                        <i class="material-icons prefix md-prefix">dashboard</i>
-                        <input id="dari" type="text" class="validate" name="dari" required>
-                        <?php
-                        if (isset($_SESSION['dari'])) {
-                            $dari = $_SESSION['dari'];
-                            echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">' . $dari . '</div>';
-                            unset($_SESSION['dari']);
-                        }
-                        ?>
-                        <label for="dari">Dari</label>
-                    </div>
-                    <div class="input-field col s6">
-                        <i class="material-icons prefix md-prefix">description</i>
-                        <textarea id="isi" class="materialize-textarea validate" name="isi" required></textarea>
-                        <?php
-                        if (isset($_SESSION['isi'])) {
-                            $isi = $_SESSION['isi'];
-                            echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">' . $isi . '</div>';
-                            unset($_SESSION['isi']);
-                        }
-                        ?>
-                        <label for="isi">Isi Acara</label>
+                        <label for="nama_kab">Tujuan</label>
                     </div>
                 </div>
                 <!-- Row in form END -->
@@ -199,7 +165,7 @@ if (empty($_SESSION['admin'])) {
                         <button type="submit" name="submit" class="btn-large blue waves-effect waves-light">SIMPAN <i class="material-icons">done</i></button>
                     </div>
                     <div class="col 6">
-                        <a href="?page=txa" class="btn-large deep-orange waves-effect waves-light">BATAL <i class="material-icons">clear</i></a>
+                        <a href="?page=spt" class="btn-large deep-orange waves-effect waves-light">BATAL <i class="material-icons">clear</i></a>
                     </div>
                 </div>
 

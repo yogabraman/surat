@@ -110,7 +110,7 @@ if (!empty($_SESSION['admin'])) {
         // $("#tipe_surat").prop("checked", true);
 
         //jquery datepicker
-        $('#tgl_surat,#tgl_agenda,#tgl_acara,#batas_waktu,#dari_tanggal,#sampai_tanggal').pickadate({
+        $('#tgl_surat,#tgl_agenda,#tgl_acara,#tgl_berangkat,#tgl_pulang,#batas_waktu,#dari_tanggal,#sampai_tanggal').pickadate({
             selectMonths: true,
             selectYears: 10,
             format: "yyyy-mm-dd"
@@ -148,6 +148,16 @@ if (!empty($_SESSION['admin'])) {
         $(function() {
             $("#asal_surat").autocomplete({
                 source: 'auto.php'
+            });
+        })
+        $(function() {
+            $("#nama_kab").autocomplete({
+                source: 'autokab.php'
+            });
+        })
+        $(function() {
+            $("#pegawai").autocomplete({
+                source: 'autonama.php'
             });
         })
 
