@@ -50,7 +50,7 @@ if (empty($_SESSION['admin'])) {
                                     <ul class="left">
                                         <li class="waves-effect waves-light hide-on-small-only"><a href="?page=spt" class="judul"><i class="material-icons">event</i> SPT</a></li>
                                         <?php
-                                        if ($_SESSION['admin'] == 2) {
+                                        if ($_SESSION['admin'] == 2 || $_SESSION['admin'] == 3) {
                                             echo '';
                                         } else {
                                             echo '
@@ -488,7 +488,11 @@ if (empty($_SESSION['admin'])) {
                                 </tbody>';
                     }
                 } else {
-                    echo '<tr><td colspan="5"><center><p class="add">Tidak ada data untuk ditampilkan. <u><a href="?page=spt&act=add">Tambah data baru</a></u></p></center></td></tr>';
+                    if ($_SESSION['admin'] == 2 || $_SESSION['admin'] == 3) {
+                        echo '';
+                    } else {
+                        echo '<tr><td colspan="5"><center><p class="add">Tidak ada data untuk ditampilkan. <u><a href="?page=spt&act=add">Tambah data baru</a></u></p></center></td></tr>';
+                    }
                 }
                 echo '</table>
                         </div>
@@ -708,7 +712,11 @@ if (empty($_SESSION['admin'])) {
                                 </tbody>';
                     }
                 } else {
-                    echo '<tr><td colspan="5"><center><p class="add">Tidak ada data untuk ditampilkan. <u><a href="?page=spt&act=add">Tambah data baru</a></u></p></center></td></tr>';
+                    if ($_SESSION['admin'] == 2 || $_SESSION['admin'] == 3) {
+                        echo '';
+                    } else {
+                        echo '<tr><td colspan="5"><center><p class="add">Tidak ada data untuk ditampilkan. <u><a href="?page=spt&act=add">Tambah data baru</a></u></p></center></td></tr>';
+                    }
                 }
                 echo '</table>
                         </div>
