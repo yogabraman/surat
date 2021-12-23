@@ -43,12 +43,7 @@ if (!empty($_SESSION['admin'])) {
                 }
                 ?> -->
                 
-                <?php
-                if ($_SESSION['admin'] == 1 || $_SESSION['admin'] == 4) { ?>
-                    <li><a href="?page=spt">SPT</a></li>
-                <?php
-                }
-                ?>
+                <li><a href="?page=spt">SPT</a></li>
 
                 <?php
                 if ($_SESSION['admin'] == 1) { ?>
