@@ -56,7 +56,7 @@
                                         <ul class="left">
                                             <li class="waves-effect waves-light hide-on-small-only"><a href="?page=tsm" class="judul"><i class="material-icons">mail</i> Surat Masuk</a></li>
                                             <?php
-                                             if($_SESSION['admin'] !=1){
+                                             if($_SESSION['admin'] !=1 AND $_SESSION['admin'] !=4){
                                             	echo '';
 											 } else {
 												 echo '

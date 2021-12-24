@@ -50,7 +50,7 @@
                                         <ul class="left">
                                             <li class="waves-effect waves-light hide-on-small-only"><a href="?page=tsk" class="judul"><i class="material-icons">drafts</i> Surat Keluar</a></li>
                                              <?php
-                                             if($_SESSION['admin'] !=1){
+                                             if($_SESSION['admin'] !=1 AND $_SESSION['admin'] !=4){
                                             	echo '';
 											 } else {
 												 echo '

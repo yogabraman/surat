@@ -116,7 +116,7 @@
                                                             <p>File lampiran surat masuk ini bertipe <strong>document</strong>, silakan klik link dibawah ini untuk melihat file lampiran tersebut.</p>
                                                         </div>
                                                         <div class="card-action">
-                                                            <strong>Lihat file :</strong> <a class="blue-text" href="download.php?id='.$files[2].'" target="_blank">'.$files[1].'</a>
+                                                            <strong>Lihat file :</strong> <a class="blue-text" href="./upload/surat_masuk/'.$row['file'].'" target="_blank">'.$files[1].'</a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -138,7 +138,7 @@
                                                             <p>File lampiran surat masuk ini bertipe <strong>PDF</strong>, silakan klik link dibawah ini untuk melihat file lampiran tersebut.</p>
                                                         </div>
                                                         <div class="card-action">
-                                                            <strong>Lihat file :</strong> <a class="blue-text" href="download.php?id='.$files[2].'" target="_blank">'.$files[1].'</a>
+                                                            <strong>Lihat file :</strong> <a class="blue-text" href="./upload/surat_masuk/'.$row['file'].'" target="_blank">'.$files[1].'</a>
                                                         </div>
                                                     </div>
                                                 </div>
