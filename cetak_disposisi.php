@@ -357,7 +357,8 @@
             <h3>Dokumen ini telah didisposisi oleh Pak Sekretaris secara digital</h3>
             </div>
         </div>
-        <div class="jarak2"></div>
+        <div class="separator"></div>
+        <div class="jarak2"> Catatan Tambahan :</div>
     </div>
     <!-- Container END -->
 
