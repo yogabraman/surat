@@ -121,7 +121,7 @@ if (empty($_SESSION['admin'])) {
                         ?>
                         <label for="tgl_berangkat">Tanggal Berangkat</label>
                     </div>
-                    <!-- <div class="input-field col s6">
+                    <div class="input-field col s6">
                         <i class="material-icons prefix md-prefix">people</i>
                         <input id="pegawai" type="text" class="validate" name="pegawai" required>
                         <?php
@@ -132,23 +132,6 @@ if (empty($_SESSION['admin'])) {
                         }
                         ?>
                         <label for="pegawai">Pegawai</label>
-                    </div> -->
-                    <div class="control-group after-add-more">
-                        <div class="input-field col s4 after-add-more">
-                            <i class="material-icons prefix md-prefix">people</i>
-                            <input id="pegawai" type="text" class="validate" name="pegawai" required>
-                            <?php
-                            if (isset($_SESSION['pegawai'])) {
-                                $pegawai = $_SESSION['pegawai'];
-                                echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">' . $pegawai . '</div>';
-                                unset($_SESSION['pegawai']);
-                            }
-                            ?>
-                            <label for="pegawai">Pegawai</label>
-                        </div>
-                        <button class="btn btn-success add-more" type="button">
-                            <i class="glyphicon glyphicon-plus"></i> Add
-                        </button>
                     </div>
                     <div class="input-field col s6">
                         <i class="material-icons prefix md-prefix">date_range</i>
