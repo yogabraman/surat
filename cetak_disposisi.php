@@ -354,7 +354,7 @@
             </table>
             <div class="footer">
             <img class="qrcode" src="'.$tempdir.'007_2.png" />
-            <h3>Dokumen ini telah didisposisi oleh Pak Sekretaris secara digital</h3>
+            <h3>Dokumen ini telah didisposisi oleh Sekretaris Dinas secara digital</h3>
             </div>
         </div>
         <div class="separator"></div>

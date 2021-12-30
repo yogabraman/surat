@@ -22,6 +22,9 @@ if (empty($_SESSION['admin'])) {
                 case 'edit':
                     include "edit_spt.php";
                     break;
+                case 'app':
+                    include "approve_spt.php";
+                    break;
                 case 'del':
                     include "hapus_spt.php";
                     break;
@@ -405,8 +408,22 @@ if (empty($_SESSION['admin'])) {
                     </div>
                     <!-- Row form END -->';
 
-                $query = mysqli_query($config, "SELECT * FROM tbl_spt WHERE (tgl_berangkat BETWEEN '$dari_tanggal' AND '$sampai_tanggal') OR (tgl_pulang BETWEEN '$dari_tanggal' AND '$sampai_tanggal') ORDER by id_spt DESC LIMIT $curr, $limit");
-                if (mysqli_num_rows($query) > 0) {
+                    $user = $_SESSION['id_user'];
+                    $admin = $_SESSION['admin'];
+                    if ($admin == 1 || $admin == 4 ){
+                        $query = mysqli_query($config, "SELECT * FROM tbl_spt WHERE 
+                        (tgl_berangkat BETWEEN '$dari_tanggal' AND '$sampai_tanggal') OR 
+                        (tgl_pulang BETWEEN '$dari_tanggal' AND '$sampai_tanggal') ORDER by id_spt DESC LIMIT $curr, $limit");
+                    } else {
+                        $query = mysqli_query($config, "SELECT * FROM tbl_spt WHERE 
+                        (status=1 AND ((tgl_berangkat BETWEEN '$dari_tanggal' AND '$sampai_tanggal') OR 
+                        (tgl_pulang BETWEEN '$dari_tanggal' AND '$sampai_tanggal'))) 
+                        OR 
+                        (id_user=$user AND ((tgl_berangkat BETWEEN '$dari_tanggal' AND '$sampai_tanggal') OR 
+                        (tgl_pulang BETWEEN '$dari_tanggal' AND '$sampai_tanggal'))) ORDER by id_spt DESC LIMIT $curr, $limit");
+                    }
+                    
+                    if (mysqli_num_rows($query) > 0) {
                     $no = 1;
                     while ($row = mysqli_fetch_array($query)) {
                         //tgl berangkat
@@ -471,17 +488,26 @@ if (empty($_SESSION['admin'])) {
                             $nm2 = "Desember";
                         }
 
-                        echo '
-                                        <td>' . $d . " " . $nm . " " . $y . '</td>
-                                        <td>' . $d2 . " " . $nm2 . " " . $y2 . '</td>
-                                        <td>' . $row['pegawai'] . '</td>
-                                        <td>' . $row['tujuan'] . '</td>
-                                        <td>';
-                        echo '
+                        if ($_SESSION['admin'] == 1 || $_SESSION['admin'] == 4) {
+                            if ($row['status'] == 0 ){
+                            echo '
+                                        <a class="btn small green waves-effect waves-light" href="?page=spt&act=app&id_spt=' . $row['id_spt'] . '">
+                                        <i class="material-icons">done</i> APPROVE</a>';
+                            }
+                            echo'
+                                        <a class="btn small blue waves-effect waves-light" href="?page=spt&act=edit&id_spt=' . $row['id_spt'] . '">
+                                        <i class="material-icons">edit</i> EDIT</a>
+                                        <a class="btn small deep-orange waves-effect waves-light" href="?page=spt&act=del&id_spt=' . $row['id_spt'] . '">
+                                        <i class="material-icons">delete</i> DEL</a>';          
+                        } elseif($_SESSION['id_user'] == $row['id_user']){
+                            echo '
                                         <a class="btn small blue waves-effect waves-light" href="?page=spt&act=edit&id_spt=' . $row['id_spt'] . '">
                                         <i class="material-icons">edit</i> EDIT</a>
                                         <a class="btn small deep-orange waves-effect waves-light" href="?page=spt&act=del&id_spt=' . $row['id_spt'] . '">
                                         <i class="material-icons">delete</i> DEL</a>';
+                        } else {
+                            echo '<button class="btn small green waves-effect waves-light"><i class="material-icons">check_circle</i> Approved</button>';
+                        }
                         echo '
                                         </td>
                                     </tr>
@@ -629,7 +655,21 @@ if (empty($_SESSION['admin'])) {
                 </div>
                 <!-- Row form END -->';
 
-                $query = mysqli_query($config, "SELECT * FROM tbl_spt WHERE (tgl_berangkat BETWEEN '$dari_tanggal' AND '$sampai_tanggal') OR (tgl_pulang BETWEEN '$dari_tanggal' AND '$sampai_tanggal') ORDER by id_spt DESC LIMIT $curr, $limit");
+                $user = $_SESSION['id_user'];
+                $admin = $_SESSION['admin'];
+                if ($admin == 1 || $admin == 4 ){
+                    $query = mysqli_query($config, "SELECT * FROM tbl_spt WHERE 
+                    (tgl_berangkat BETWEEN '$dari_tanggal' AND '$sampai_tanggal') OR 
+                    (tgl_pulang BETWEEN '$dari_tanggal' AND '$sampai_tanggal') ORDER by id_spt DESC LIMIT $curr, $limit");
+                } else {
+                    $query = mysqli_query($config, "SELECT * FROM tbl_spt WHERE 
+                    (status=1 AND ((tgl_berangkat BETWEEN '$dari_tanggal' AND '$sampai_tanggal') OR 
+                    (tgl_pulang BETWEEN '$dari_tanggal' AND '$sampai_tanggal'))) 
+                    OR 
+                    (id_user=$user AND ((tgl_berangkat BETWEEN '$dari_tanggal' AND '$sampai_tanggal') OR 
+                    (tgl_pulang BETWEEN '$dari_tanggal' AND '$sampai_tanggal'))) ORDER by id_spt DESC LIMIT $curr, $limit");
+                }
+                
                 if (mysqli_num_rows($query) > 0) {
                     $no = 1;
                     while ($row = mysqli_fetch_array($query)) {
@@ -701,11 +741,27 @@ if (empty($_SESSION['admin'])) {
                                         <td>' . $row['pegawai'] . '</td>
                                         <td>' . $row['tujuan'] . '</td>
                                         <td>';
-                        echo '
+
+                        if ($_SESSION['admin'] == 1 || $_SESSION['admin'] == 4) {
+                            if ($row['status'] == 0 ){
+                            echo '
+                                        <a class="btn small green waves-effect waves-light" href="?page=spt&act=app&id_spt=' . $row['id_spt'] . '">
+                                        <i class="material-icons">done</i> APPROVE</a>';
+                            }
+                            echo'
+                                        <a class="btn small blue waves-effect waves-light" href="?page=spt&act=edit&id_spt=' . $row['id_spt'] . '">
+                                        <i class="material-icons">edit</i> EDIT</a>
+                                        <a class="btn small deep-orange waves-effect waves-light" href="?page=spt&act=del&id_spt=' . $row['id_spt'] . '">
+                                        <i class="material-icons">delete</i> DEL</a>';          
+                        } elseif($_SESSION['id_user'] == $row['id_user']){
+                            echo '
                                         <a class="btn small blue waves-effect waves-light" href="?page=spt&act=edit&id_spt=' . $row['id_spt'] . '">
                                         <i class="material-icons">edit</i> EDIT</a>
                                         <a class="btn small deep-orange waves-effect waves-light" href="?page=spt&act=del&id_spt=' . $row['id_spt'] . '">
                                         <i class="material-icons">delete</i> DEL</a>';
+                        } else {
+                            echo '<button class="btn small green waves-effect waves-light"><i class="material-icons">check_circle</i> Approved</button>';
+                        }
                         echo '
                                         </td>
                                     </tr>
