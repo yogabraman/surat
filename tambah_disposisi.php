@@ -16,9 +16,9 @@ if (empty($_SESSION['admin'])) {
 
         //validasi form kosong
         if (
-            $_REQUEST['tujuan'] == "" || 
-            $_REQUEST['isi_disposisi'] == "" || 
-            $_REQUEST['sifat'] == "" || 
+            $_REQUEST['tujuan'] == "" ||
+            $_REQUEST['isi_disposisi'] == "" ||
+            $_REQUEST['sifat'] == "" ||
             // $_REQUEST['tgl_dispo'] == "" || 
             $_REQUEST['catatan'] == ""
         ) {
@@ -40,49 +40,49 @@ if (empty($_SESSION['admin'])) {
             //     echo '<script language="javascript">window.history.back();</script>';
             // } else {
 
-                if (!preg_match("/^[a-zA-Z0-9.,_()%&@\/\r\n -]*$/", $isi_disposisi)) {
-                    $_SESSION['isi_disposisi'] = 'Form Isi Disposisi hanya boleh mengandung karakter huruf, angka, spasi, titik(.), koma(,), minus(-), garis miring(/), dan(&), underscore(_), kurung(), persen(%) dan at(@)';
+            if (!preg_match("/^[a-zA-Z0-9.,_()%&@\/\r\n -]*$/", $isi_disposisi)) {
+                $_SESSION['isi_disposisi'] = 'Form Isi Disposisi hanya boleh mengandung karakter huruf, angka, spasi, titik(.), koma(,), minus(-), garis miring(/), dan(&), underscore(_), kurung(), persen(%) dan at(@)';
+                echo '<script language="javascript">window.history.back();</script>';
+            } else {
+
+                // if (!preg_match("/^[0-9 -]*$/", $tgl_dispo)) {
+                //     $_SESSION['tgl_dispo'] = 'Form Batas Waktu hanya boleh mengandung karakter huruf dan minus(-)<br/>';
+                //     echo '<script language="javascript">window.history.back();</script>';
+                // } else {
+
+                if (!preg_match("/^[a-zA-Z0-9.,()%@\/ -]*$/", $catatan)) {
+                    $_SESSION['catatan'] = 'Form catatan hanya boleh mengandung karakter huruf, angka, spasi, titik(.), koma(,), minus(-) garis miring(/), dan kurung()';
                     echo '<script language="javascript">window.history.back();</script>';
                 } else {
 
-                    // if (!preg_match("/^[0-9 -]*$/", $tgl_dispo)) {
-                    //     $_SESSION['tgl_dispo'] = 'Form Batas Waktu hanya boleh mengandung karakter huruf dan minus(-)<br/>';
-                    //     echo '<script language="javascript">window.history.back();</script>';
-                    // } else {
+                    if (!preg_match("/^[a-zA-Z0 ]*$/", $sifat)) {
+                        $_SESSION['sifat'] = 'Form SIFAT hanya boleh mengandung karakter huruf dan spasi';
+                        echo '<script language="javascript">window.history.back();</script>';
+                    } else {
+                        //tipe surat
+                        $tipe = $colNames['tipe_surat'];
 
-                        if (!preg_match("/^[a-zA-Z0-9.,()%@\/ -]*$/", $catatan)) {
-                            $_SESSION['catatan'] = 'Form catatan hanya boleh mengandung karakter huruf, angka, spasi, titik(.), koma(,), minus(-) garis miring(/), dan kurung()';
-                            echo '<script language="javascript">window.history.back();</script>';
-                        } else {
-
-                            if (!preg_match("/^[a-zA-Z0 ]*$/", $sifat)) {
-                                $_SESSION['sifat'] = 'Form SIFAT hanya boleh mengandung karakter huruf dan spasi';
-                                echo '<script language="javascript">window.history.back();</script>';
-                            } else {
-                                //tipe surat
-                                $tipe = $colNames['tipe_surat'];
-
-                                $query = mysqli_query($config, "INSERT INTO tbl_disposisi(tujuan,perintah,isi_disposisi,sifat,tgl_dispo,catatan,id_surat,id_user)
+                        $query = mysqli_query($config, "INSERT INTO tbl_disposisi(tujuan,perintah,isi_disposisi,sifat,tgl_dispo,catatan,id_surat,id_user)
                                         VALUES('$tujuan','$perintah','$isi_disposisi','$sifat',NOW(),'$catatan','$id_surat','$id_user')");
 
-                                $query_dispo = mysqli_query($config, "UPDATE tbl_surat_masuk SET status_dispo=1 WHERE id_surat='$id_surat'");
+                        $query_dispo = mysqli_query($config, "UPDATE tbl_surat_masuk SET status_dispo=1 WHERE id_surat='$id_surat'");
 
-                                if ($query == true) {
-                                    if($tipe==1){
-                                        $query_und = mysqli_query($config, "UPDATE tbl_agenda SET dispo='$tujuan' WHERE id_surat='$id_surat'");
-                                    }
-                                    $_SESSION['succAdd'] = 'SUKSES! Data berhasil ditambahkan';
-                                    echo '<script language="javascript">
+                        if ($query == true) {
+                            if ($tipe == 1) {
+                                $query_und = mysqli_query($config, "UPDATE tbl_agenda SET dispo='$tujuan' WHERE id_surat='$id_surat'");
+                            }
+                            $_SESSION['succAdd'] = 'SUKSES! Data berhasil ditambahkan';
+                            echo '<script language="javascript">
                                                 window.location.href="./admin.php?page=tsm&act=disp&id_surat=' . $id_surat . '";
                                               </script>';
-                                } else {
-                                    $_SESSION['errQ'] = 'ERROR! Ada masalah dengan query disposisi';
-                                    echo '<script language="javascript">window.history.back();</script>';
-                                }
-                            }
+                        } else {
+                            $_SESSION['errQ'] = 'ERROR! Ada masalah dengan query disposisi';
+                            echo '<script language="javascript">window.history.back();</script>';
                         }
-                    // }
+                    }
                 }
+                // }
+            }
             // }
         }
     } else { ?>
@@ -137,6 +137,29 @@ if (empty($_SESSION['admin'])) {
 
             <!-- Form START -->
             <form class="col s12" method="post" action="">
+                <div class="col s12">
+                    <div class="card blue lighten-5">
+                        <div class="card-content">
+                            <p class="description">Lihat Dokumen: </p> 
+                            <?php 
+                                // echo $_REQUEST['id_surat']; 
+                                $id_surat = mysqli_real_escape_string($config, $_REQUEST['id_surat']);
+                                $query = mysqli_query($config, "SELECT * FROM tbl_surat_masuk WHERE id_surat='$id_surat'");
+                                if(mysqli_num_rows($query) > 0){
+                                    while($row = mysqli_fetch_array($query)){
+                                        if(empty($row['file'])){
+                                            echo '';
+                                        } else {
+                                            $files = explode('-', $row['file']);
+                                            echo '<a class="blue-text" href="./upload/surat_masuk/'.$row['file'].'" target="_blank">'.$files[1].'</a>';
+                                        }
+                                    }
+                                }
+                            ?> 
+                            </p>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Row in form START -->
                 <div class="row">

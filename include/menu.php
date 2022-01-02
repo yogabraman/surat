@@ -24,7 +24,7 @@ if (!empty($_SESSION['admin'])) {
                 </ul>
 
                 <?php
-                if ($_SESSION['admin'] == 1 || $_SESSION['admin'] == 4 || $_SESSION['admin'] == 3) { ?>
+                if ($_SESSION['admin'] == 1 || $_SESSION['admin'] == 2 || $_SESSION['admin'] == 4 || $_SESSION['admin'] == 3) { ?>
                     <li><a class="dropdown-button" href="#!" data-activates="agenda">Buku Agenda <i class="material-icons md-18">arrow_drop_down</i></a></li>
                     <ul id='agenda' class='dropdown-content'>
                         <li><a href="?page=txa">Tambah Agenda</a></li>
