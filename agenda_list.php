@@ -268,7 +268,7 @@ if (empty($_SESSION['admin'])) {
                     </div>';
         }
     } else {
-        $query = mysqli_query($config, "SELECT * FROM `tbl_agenda` WHERE CONCAT(tgl_agenda,' ',waktu_agenda) >= NOW()");
+        $query = mysqli_query($config, "SELECT * FROM `tbl_agenda` WHERE CONCAT(tgl_agenda,' ',waktu_agenda) >= NOW() ORDER by id_agenda DESC ");
 
         echo '
                 <!-- Row Start -->
