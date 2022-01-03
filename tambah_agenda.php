@@ -26,7 +26,13 @@ if (empty($_SESSION['admin'])) {
             $dari = $_REQUEST['dari'];
             $isi = $_REQUEST['isi'];
             $id_user = $_SESSION['id_user'];
-            $bidang = json_encode(array($_SESSION['nip']));
+            if ($_SESSION['admin'] == 1 || $_SESSION['admin'] == 4) {
+                // $id_bidang = $_REQUEST['bidang'];
+                // $bidang = mysqli_query($config, "SELECT nama FROM `tbl_struktural` WHERE id_struk=$id_bidang")->fetch_row()[0];
+                $bidang = json_encode($_REQUEST['tujuan']);
+            } else {
+                $bidang = json_encode(array($_SESSION['nip']));
+            }
 
             //validasi input data
             if (!preg_match("/^[0-9.-]*$/", $tgl_acara)) {
@@ -124,8 +130,13 @@ if (empty($_SESSION['admin'])) {
 
             <!-- Form START -->
             <!-- <?php
-                print_r(array($_SESSION['nip']));
-            ?> -->
+                    // $names = array($_SESSION['nip']);
+                    if (in_array("Sekretaris", array($_SESSION['nip'])) == true) {
+                        echo 'true';
+                    } else {
+                        echo 'false';
+                    }
+                    ?> -->
             <form class="col s12" method="POST" action="?page=txa&act=add" enctype="multipart/form-data">
 
                 <!-- Row in form START -->
@@ -191,6 +202,27 @@ if (empty($_SESSION['admin'])) {
                         ?>
                         <label for="isi">Isi Acara</label>
                     </div>
+                    <?php
+                    if ($_SESSION['admin'] == 1 || $_SESSION['admin'] == 4) {
+                    ?>
+                        <div class="input-field col s6">
+                        <i class="material-icons prefix md-prefix">supervisor_account</i><label>Bidang :</label><br />
+                        <?php
+                        $query = mysqli_query($config, "SELECT * FROM tbl_struktural");
+                        if (mysqli_num_rows($query) > 0) {
+                            while ($row = mysqli_fetch_array($query)) {
+                        ?>
+                                <input id="struk_<?= $row['id_struk'] ?>" type="checkbox" class="validate" name="tujuan[]" value="<?= $row['nama'] ?>">
+                                <label for="struk_<?= $row['id_struk'] ?>"><?= $row['nama'] ?></label>
+                        <?php
+                            }
+                        }
+                        ?>
+                    </div>
+                        </div>
+                    <?php
+                    }
+                    ?>
                 </div>
                 <!-- Row in form END -->
 

@@ -52,7 +52,7 @@
                         <div class="z-depth-1">
                             <nav class="secondary-nav">
                                 <div class="nav-wrapper blue-grey darken-1">
-                                    <div class="col m4">
+                                    <div class="col m6">
                                         <ul class="left">
                                             <li class="waves-effect waves-light hide-on-small-only"><a href="?page=tsm" class="judul"><i class="material-icons">mail</i> Surat Masuk</a></li>
                                             <?php
@@ -69,7 +69,7 @@
                                         </ul>
                                     </div>
 
-                                    <div class="col m5 hide-on-med-and-down">
+                                    <div class="col m3 hide-on-med-and-down">
                                         <form method="post" action="?page=tsm">
                                             <div class="input-field round-in-box">
                                                 <input id="search" type="search" name="cari" placeholder="Ketik dan tekan enter mencari data..." required>
