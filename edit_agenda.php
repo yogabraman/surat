@@ -10,8 +10,11 @@ if (empty($_SESSION['admin'])) {
 
         //validasi form kosong
         if (
-            $_REQUEST['no_agenda'] == "" || $_REQUEST['no_surat'] == "" || $_REQUEST['asal_surat'] == "" || $_REQUEST['isi'] == ""
-            || $_REQUEST['kode'] == "" || $_REQUEST['tgl_surat'] == ""  || $_REQUEST['keterangan'] == ""
+            $_REQUEST['tgl_acara'] == "" ||
+            $_REQUEST['wkt_acara'] == "" ||
+            $_REQUEST['tempat'] == "" ||
+            $_REQUEST['dari'] == "" ||
+            $_REQUEST['isi'] == ""
         ) {
             $_SESSION['errEmpty'] = 'ERROR! Semua form wajib diisi';
             echo '<script language="javascript">window.history.back();</script>';
@@ -22,6 +25,7 @@ if (empty($_SESSION['admin'])) {
             $tempat = $_REQUEST['tempat'];
             $dari = $_REQUEST['dari'];
             $isi = $_REQUEST['isi'];
+            $id_surat = $_REQUEST['id_surat'];
             $id_user = $_SESSION['id_user'];
             if ($_SESSION['admin'] == 1 || $_SESSION['admin'] == 4) {
                 // $id_bidang = $_REQUEST['bidang'];
@@ -66,6 +70,7 @@ if (empty($_SESSION['admin'])) {
                                 waktu_agenda='$wkt_acara',
                                 tempat='$tempat',
                                 dispo='$bidang',
+                                id_surat='$id_surat',
                                 id_user='$id_user'
                                 WHERE id_agenda='$id_agenda'");
 
@@ -86,8 +91,8 @@ if (empty($_SESSION['admin'])) {
     } else {
 
         $id_agenda = mysqli_real_escape_string($config, $_REQUEST['id_agenda']);
-        $query = mysqli_query($config, "SELECT id_agenda, asal, isi, tgl_agenda, waktu_agenda, tempat, dispo, id_user FROM tbl_agenda WHERE id_agenda='$id_agenda'");
-        list($id_agenda, $asal, $isi, $tgl_agenda, $waktu_agenda, $tempat, $dispo, $id_user) = mysqli_fetch_array($query);
+        $query = mysqli_query($config, "SELECT id_agenda, asal, isi, tgl_agenda, waktu_agenda, tempat, dispo, id_surat, id_user FROM tbl_agenda WHERE id_agenda='$id_agenda'");
+        list($id_agenda, $asal, $isi, $tgl_agenda, $waktu_agenda, $tempat, $dispo, $id_surat, $id_user) = mysqli_fetch_array($query);
 
         if ($_SESSION['id_user'] != $id_user and $_SESSION['id_user'] != 1 and $_SESSION['admin'] != 4) {
             echo '<script language="javascript">
@@ -149,17 +154,18 @@ if (empty($_SESSION['admin'])) {
 
                     <!-- Row in form START -->
                     <div class="row">
+                        <input type="hidden" name="id_surat" value="<?php echo $id_surat; ?>">
                         <div class="input-field col s6">
                             <i class="material-icons prefix md-prefix">date_range</i>
-                            <input id="tgl_agenda" type="text" name="tgl_agenda" class="datepicker" value="<?php echo $tgl_agenda; ?>" required>
+                            <input id="tgl_acara" type="text" name="tgl_acara" class="datepicker" value="<?php echo $tgl_agenda; ?>" required>
                             <?php
-                            if (isset($_SESSION['tgl_agenda'])) {
-                                $tgl_agenda = $_SESSION['tgl_agenda'];
-                                echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">' . $tgl_agenda . '</div>';
-                                unset($_SESSION['tgl_agenda']);
+                            if (isset($_SESSION['tgl_acara'])) {
+                                $tgl_acara = $_SESSION['tgl_acara'];
+                                echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">' . $tgl_acara . '</div>';
+                                unset($_SESSION['tgl_acara']);
                             }
                             ?>
-                            <label for="tgl_agenda">Tanggal Acara</label>
+                            <label for="tgl_acara">Tanggal Acara</label>
                         </div>
 
                         <div class="input-field col s6">
@@ -177,26 +183,26 @@ if (empty($_SESSION['admin'])) {
 
                         <div class="input-field col s6">
                             <i class="material-icons prefix md-prefix">alarm</i><br><br><label>Waktu Acara :</label>
-                            <input id="waktu_agenda" type="time" name="waktu_agenda" class="" value="<?php echo $waktu_agenda; ?>" required>
+                            <input id="wkt_acara" type="time" name="wkt_acara" class="" value="<?php echo $waktu_agenda; ?>" required>
                             <?php
-                            if (isset($_SESSION['waktu_agenda'])) {
-                                $waktu_agenda = $_SESSION['waktu_agenda'];
-                                echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">' . $waktu_agenda . '</div>';
-                                unset($_SESSION['waktu_agenda']);
+                            if (isset($_SESSION['wkt_acara'])) {
+                                $wkt_acara = $_SESSION['wkt_acara'];
+                                echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">' . $wkt_acara . '</div>';
+                                unset($_SESSION['wkt_acara']);
                             }
                             ?>
                         </div>
                         <div class="input-field col s6">
                             <i class="material-icons prefix md-prefix">dashboard</i>
-                            <input id="asal" type="text" class="validate" name="asal" value="<?php echo $asal; ?>" required>
+                            <input id="dari" type="text" class="validate" name="dari" value="<?php echo $asal; ?>" required>
                             <?php
-                            if (isset($_SESSION['asal'])) {
-                                $asal = $_SESSION['asal'];
-                                echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">' . $asal . '</div>';
-                                unset($_SESSION['asal']);
+                            if (isset($_SESSION['dari'])) {
+                                $dari = $_SESSION['dari'];
+                                echo '<div id="alert-message" class="callout bottom z-depth-1 red lighten-4 red-text">' . $dari . '</div>';
+                                unset($_SESSION['dari']);
                             }
                             ?>
-                            <label for="asal">Dari</label>
+                            <label for="dari">Dari</label>
                         </div>
                         <div class="input-field col s6">
                             <i class="material-icons prefix md-prefix">description</i>
