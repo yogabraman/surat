@@ -67,7 +67,7 @@ if (empty($_SESSION['admin'])) {
             die();
         } else {
 
-            $query = mysqli_query($config, "SELECT * FROM tbl_agenda WHERE tgl_agenda BETWEEN '$dari_tanggal' AND '$sampai_tanggal' ORDER by id_agenda ASC, waktu_agenda ASC ");
+            $query = mysqli_query($config, "SELECT * FROM tbl_agenda WHERE tgl_agenda BETWEEN '$dari_tanggal' AND '$sampai_tanggal' ORDER by tgl_agenda ASC, waktu_agenda ASC ");
 
             echo '
                     <!-- Tampilan Awal Agenda Surat Masuk -->
@@ -268,7 +268,7 @@ if (empty($_SESSION['admin'])) {
                     </div>';
         }
     } else {
-        $query = mysqli_query($config, "SELECT * FROM `tbl_agenda` WHERE CONCAT(tgl_agenda,' ',waktu_agenda) >= NOW() ORDER by id_agenda ASC, waktu_agenda ASC ");
+        $query = mysqli_query($config, "SELECT * FROM `tbl_agenda` WHERE CONCAT(tgl_agenda,' ',waktu_agenda) >= NOW() ORDER by tgl_agenda ASC, waktu_agenda ASC ");
 
         echo '
                 <!-- Row Start -->

@@ -29,7 +29,7 @@
                 <!-- Include Header Instansi END -->
                 <?php
 
-                $query = mysqli_query($config, "SELECT * FROM `tbl_agenda` WHERE CONCAT(tgl_agenda,' ',waktu_agenda) >= NOW() ORDER by id_agenda ASC, waktu_agenda ASC ");
+                $query = mysqli_query($config, "SELECT * FROM `tbl_agenda` WHERE CONCAT(tgl_agenda,' ',waktu_agenda) >= NOW() ORDER by tgl_agenda ASC, waktu_agenda ASC ");
 
                 echo '
                     <div class="row agenda">
