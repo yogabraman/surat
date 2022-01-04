@@ -41,6 +41,11 @@ session_start();
                                     } elseif($m == "12"){
                                         $nm = "Desember";
                                     }
+                                    if ($row['status_dispo'] == 1) {
+                                        $dispo = '<i class="material-icons">check_circle</i>';
+                                    } else {
+                                        $dispo =  '<i class="material-icons">remove_circle_outline</i>';
+                                    }
 
 if($_SESSION['admin'] != $row['id_user'] AND $_SESSION['admin'] != 1 AND $_SESSION['admin'] != 4){
     $action = '<a class="btn small light-green waves-effect waves-light tooltipped" data-position="left" data-tooltip="Pilih Disp untuk Melihat Disposisi Surat" href="?page=tsm&act=disp&id_surat='.$row['id_surat'].'"><i class="material-icons">description</i> DISP</a>';
@@ -59,6 +64,7 @@ if($_SESSION['admin'] != $row['id_user'] AND $_SESSION['admin'] != 1 AND $_SESSI
 				'd' => $d,
 				'm' => $nm,
 				'y' => $y,
+                'dispo' => $dispo,
 				'action' => $action
 				
 		);
@@ -70,5 +76,3 @@ if($_SESSION['admin'] != $row['id_user'] AND $_SESSION['admin'] != 1 AND $_SESSI
 		
 
 		echo json_encode($data);
-
-?>

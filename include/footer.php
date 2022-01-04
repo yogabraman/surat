@@ -82,7 +82,7 @@ if (!empty($_SESSION['admin'])) {
             data : {id:id},
             success: function(data){
                 $.each(data,function(key, value){
-                    $('#test').append('<tr><td>'+value.no_agenda+'<br/><hr/>'+value.kode+'</td><td>'+value.isi+'<br/><br/><strong>File : '+value.file+'</strong></td><td>'+value.asal_surat+'</td><td>'+value.no_surat+'<br/><hr/>'+value.d+''+value.m+''+value.y+'</td><td>'+value.action+'</td></tr>');
+                    $('#test').append('<tr><td>'+value.no_agenda+'</td><td>'+value.isi+'<br/><br/><strong>File : '+value.file+'</strong></td><td>'+value.asal_surat+'</td><td>'+value.no_surat+'<br/><hr/>'+value.d+' '+value.m+' '+value.y+'</td><td>'+value.dispo+'</td><td>'+value.action+'</td></tr>');
                     
                 });
             }

@@ -29,7 +29,7 @@
                 <!-- Include Header Instansi END -->
                 <?php
 
-                $query = mysqli_query($config, "SELECT * FROM `tbl_agenda` WHERE CONCAT(tgl_agenda,' ',waktu_agenda) >= NOW()");
+                $query = mysqli_query($config, "SELECT * FROM `tbl_agenda` WHERE CONCAT(tgl_agenda,' ',waktu_agenda) >= NOW() ORDER by id_agenda ASC, waktu_agenda ASC ");
 
                 echo '
                     <div class="row agenda">
@@ -90,8 +90,8 @@
                                         <td>' . $d . " " . $nm . " " . $y . '</td>
                                         <td>' . $row['waktu_agenda'] . '</td>
                                         <td>' . $row['asal'] . '</td>
-                                        <td>' . $row['isi'] . '</td>
                                         <td>' . $row['tempat'] . '</td>
+                                        <td>' . $row['isi'] . '</td>
                                         <td>' . implode("<br>", $disp) . '</td>';
 
                         echo '</td>
