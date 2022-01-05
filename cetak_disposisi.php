@@ -199,7 +199,7 @@
                 if (!file_exists($tempdir)) //Buat folder bername temp
                 mkdir($tempdir);
                 //isi qrcode jika di scan
-                $codeContents = "http://192.200.200.35/surat/scanqr.php";
+                $codeContents = "http://sijan-nda.dispermadesdukcapil.jatengprov.go.id/scanqr.php";
                 QRcode::png($codeContents, $tempdir.'007_2.png', QR_ECLEVEL_L, 1);
 
                 if(mysqli_num_rows($query) > 0){

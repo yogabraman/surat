@@ -49,17 +49,23 @@ session_start();
 
 if($_SESSION['admin'] != $row['id_user'] AND $_SESSION['admin'] != 1 AND $_SESSION['admin'] != 4){
     if ($row['status_dispo'] == 1) {
-        $action = '<a class="btn small light-green waves-effect waves-light tooltipped" data-position="left" data-tooltip="Pilih Disp untuk Melihat Disposisi Surat" href="?page=tsm&act=disp&id_surat=' . $row['id_surat'] . '">
+        $action = '<a class="btn small light-blue waves-effect waves-light tooltipped" data-position="left" data-tooltip="Pilih Disp untuk Melihat Disposisi Surat" href="?page=tsm&act=disp&id_surat=' . $row['id_surat'] . '">
         <i class="material-icons">description</i> DISP</a>';
     } else {
-        $action = '<a class="btn small light-blue waves-effect waves-light tooltipped" data-position="left" data-tooltip="Tambah Disposisi Surat" href="?page=tsm&act=disp&id_surat=' . $row['id_surat'] . '&sub=add">
+        $action = '<a class="btn small light-green waves-effect waves-light tooltipped" data-position="left" data-tooltip="Tambah Disposisi Surat" href="?page=tsm&act=disp&id_surat=' . $row['id_surat'] . '&sub=add">
         <i class="material-icons">description</i> DISP</a>';
     }
     
 } else {
-    $action = '<a class="btn small blue waves-effect waves-light" href="?page=tsm&act=edit&id_surat='.$row['id_surat'].'"><i class="material-icons">edit</i> EDIT</a>
+    if ($row['status_dispo'] == 1) {
+        $action = '<a class="btn small blue waves-effect waves-light" href="?page=tsm&act=edit&id_surat='.$row['id_surat'].'"><i class="material-icons">edit</i> EDIT</a>
+    <a class="btn small light-blue waves-effect waves-light tooltipped" data-position="left" data-tooltip="Pilih Disp untuk Melihat Disposisi Surat" href="?page=tsm&act=disp&id_surat='.$row['id_surat'].'"><i class="material-icons">description</i> DISP</a>
+    <a class="btn small deep-orange waves-effect waves-light" href="?page=tsm&act=del&id_surat='.$row['id_surat'].'"><i class="material-icons">delete</i> DEL</a>';
+    } else {
+        $action = '<a class="btn small blue waves-effect waves-light" href="?page=tsm&act=edit&id_surat='.$row['id_surat'].'"><i class="material-icons">edit</i> EDIT</a>
     <a class="btn small light-green waves-effect waves-light tooltipped" data-position="left" data-tooltip="Pilih Disp untuk Melihat Disposisi Surat" href="?page=tsm&act=disp&id_surat='.$row['id_surat'].'"><i class="material-icons">description</i> DISP</a>
     <a class="btn small deep-orange waves-effect waves-light" href="?page=tsm&act=del&id_surat='.$row['id_surat'].'"><i class="material-icons">delete</i> DEL</a>';
+    }
 }
 
 		$data[] = array(
@@ -71,7 +77,6 @@ if($_SESSION['admin'] != $row['id_user'] AND $_SESSION['admin'] != 1 AND $_SESSI
 				'd' => $d,
 				'm' => $nm,
 				'y' => $y,
-                'dispo' => $dispo,
 				'action' => $action
 				
 		);

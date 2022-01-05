@@ -28,7 +28,7 @@
                 <div class="col s12">
                     <div class="card">
                         <div class="card-content">
-                            <h4>Disposisi sudah melalui Pak Sek.</h4>
+                            <h4>Disposisi sudah melalui Sekretaris Dinas.</h4>
                             <p class="description">Terimakasih</p>
                         </div>
                     </div>

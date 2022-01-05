@@ -147,9 +147,9 @@ if (empty($_SESSION['admin'])) {
                             <tr>
                                 <th width="8%">No. Agenda</th>
                                 <th width="30%">Isi Ringkas<br /> File</th>
-                                <th width="24%">Asal Surat</th>
-                                <th width="14%">No. Surat<br />Tgl Surat</th>
-                                <th width="6%">Status<br>Dispo</th>
+                                <th width="27%">Asal Surat</th>
+                                <th width="17%">No. Surat<br />Tgl Surat</th>
+                                <!-- <th width="6%">Status<br>Dispo</th> -->
                                 <th width="18%">Tindakan <span class="right"><i class="material-icons" style="color: #333;">settings</i></span></th>
                             </tr>
                         </thead>
@@ -252,17 +252,23 @@ if (empty($_SESSION['admin'])) {
                             $id_surat = $row['id_surat'];
                             $query2 = mysqli_query($config, "SELECT * FROM tbl_disposisi JOIN tbl_surat_masuk ON tbl_disposisi.id_surat = tbl_surat_masuk.id_surat WHERE tbl_disposisi.id_surat='$id_surat'");
                             if (mysqli_num_rows($query2) > 0) {
-                                echo '<a class="btn small light-green waves-effect waves-light tooltipped" data-position="left" data-tooltip="Pilih Disp untuk Melihat Disposisi Surat" href="?page=tsm&act=disp&id_surat=' . $row['id_surat'] . '">
+                                echo '<a class="btn small light-blue waves-effect waves-light tooltipped" data-position="left" data-tooltip="Pilih Disp untuk Melihat Disposisi Surat" href="?page=tsm&act=disp&id_surat=' . $row['id_surat'] . '">
                                                     <i class="material-icons">description</i> DISP</a>';
                             } else {
-                                echo '<a class="btn small light-blue waves-effect waves-light tooltipped" data-position="left" data-tooltip="Tambah Disposisi Surat" href="?page=tsm&act=disp&id_surat=' . $row['id_surat'] . '&sub=add">
+                                echo '<a class="btn small light-green waves-effect waves-light tooltipped" data-position="left" data-tooltip="Tambah Disposisi Surat" href="?page=tsm&act=disp&id_surat=' . $row['id_surat'] . '&sub=add">
                                                     <i class="material-icons">description</i> DISP</a>';
                             }
                         } else {
-                            echo '<a class="btn small blue waves-effect waves-light" href="?page=tsm&act=edit&id_surat=' . $row['id_surat'] . '">
-                                                    <i class="material-icons">edit</i> EDIT</a>
-													<a class="btn small light-green waves-effect waves-light tooltipped" data-position="left" data-tooltip="Pilih Disp untuk Melihat Disposisi Suraty" href="?page=tsm&act=disp&id_surat=' . $row['id_surat'] . '">
-                                                    <i class="material-icons">description</i> DISP</a>
+                            echo '<a style="margin-right:5px;" class="btn small blue waves-effect waves-light" href="?page=tsm&act=edit&id_surat=' . $row['id_surat'] . '">
+                                                    <i class="material-icons">edit</i> EDIT</a>';
+                            if ($row['status_dispo'] == 1) {
+                                echo '<a class="btn small light-blue waves-effect waves-light tooltipped" data-position="left" data-tooltip="Pilih Disp untuk Melihat Disposisi Suraty" href="?page=tsm&act=disp&id_surat=' . $row['id_surat'] . '">
+                                                <i class="material-icons">description</i> DISP</a>';
+                            } else {
+                                echo '<a class="btn small light-green waves-effect waves-light tooltipped" data-position="left" data-tooltip="Pilih Disp untuk Melihat Disposisi Suraty" href="?page=tsm&act=disp&id_surat=' . $row['id_surat'] . '">
+                                                <i class="material-icons">description</i> DISP</a>';
+                            }
+                            echo '
                                                 <a class="btn small deep-orange waves-effect waves-light" href="?page=tsm&act=del&id_surat=' . $row['id_surat'] . '">
                                                     <i class="material-icons">delete</i> DEL</a>';
                         }
@@ -460,10 +466,16 @@ if (empty($_SESSION['admin'])) {
                                                     <i class="material-icons">description</i> DISP</a>';
                             }
                         } else {
-                            echo '<a class="btn small blue waves-effect waves-light" href="?page=tsm&act=edit&id_surat=' . $row['id_surat'] . '">
-                                                    <i class="material-icons">edit</i> EDIT</a>
-													<a class="btn small light-green waves-effect waves-light tooltipped" data-position="left" data-tooltip="Pilih Disp untuk Melihat Disposisi Surat" href="?page=tsm&act=disp&id_surat=' . $row['id_surat'] . '">
-                                                    <i class="material-icons">description</i> DISP</a>
+                            echo '<a style="margin-right:5px;" class="btn small blue waves-effect waves-light" href="?page=tsm&act=edit&id_surat=' . $row['id_surat'] . '">
+                                                    <i class="material-icons">edit</i> EDIT</a><a>';
+                            if ($row['status_dispo'] == 1) {
+                                echo '<a class="btn small light-blue waves-effect waves-light tooltipped" data-position="left" data-tooltip="Pilih Disp untuk Melihat Disposisi Suraty" href="?page=tsm&act=disp&id_surat=' . $row['id_surat'] . '">
+                                                        <i class="material-icons">description</i> DISP</a>';
+                            } else {
+                                echo '<a class="btn small light-green waves-effect waves-light tooltipped" data-position="left" data-tooltip="Pilih Disp untuk Melihat Disposisi Suraty" href="?page=tsm&act=disp&id_surat=' . $row['id_surat'] . '">
+                                                        <i class="material-icons">description</i> DISP</a>';
+                            }
+                            echo '
                                                 <a class="btn small deep-orange waves-effect waves-light" href="?page=tsm&act=del&id_surat=' . $row['id_surat'] . '">
                                                     <i class="material-icons">delete</i> DEL</a>';
                         }

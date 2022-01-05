@@ -188,7 +188,7 @@
                             <p class="warna agenda">Agenda Surat Masuk dari tanggal <strong>'.$d." ".$nm." ".$y.'</strong> sampai dengan tanggal <strong>'.$d2." ".$nm2." ".$y2.'</strong></p>
                         </div>
                          <div class="col s2">';
-                                             if($_SESSION['admin'] !=1){
+                                             if($_SESSION['admin'] !=1 AND $_SESSION['admin'] !=4 ){
                                             	echo '';
 											 } else {
 												 echo '
@@ -201,7 +201,7 @@
                         <table class="bordered" id="tbl" width="100%">
                             <thead class="blue lighten-4">
                                 <tr>
-                                    <th width="3%">No</th>
+                                    <th width="5%">No</th>
                                     <th width="5%">Kode</th>
                                     <th width="21%">Isi Ringkas</th>
                                     <th width="18%">Asal Surat</th>
