@@ -118,7 +118,16 @@
 
                                                             //jika surat biasa
                                                             if($tipe_surat==0){
-                                                                $query = mysqli_query($config, "UPDATE tbl_surat_masuk SET no_agenda='$no_agenda',no_surat='$no_surat',asal_surat='$asal_surat',isi='$isi',tgl_surat='$tgl_surat',file='$nfile',keterangan='$keterangan',id_user='$id_user' WHERE id_surat='$id_surat'");
+                                                                $query = mysqli_query($config, "UPDATE tbl_surat_masuk SET 
+                                                                no_agenda='$no_agenda',
+                                                                no_surat='$no_surat',
+                                                                asal_surat='$asal_surat',
+                                                                isi='$isi',
+                                                                tgl_surat='$tgl_surat',
+                                                                file='$nfile',
+                                                                keterangan='$keterangan',
+                                                                id_user='$id_user' 
+                                                                WHERE id_surat='$id_surat'");
 
                                                                 if($query == true){
                                                                 $_SESSION['succEdit'] = 'SUKSES! Data berhasil diupdate';

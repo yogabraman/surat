@@ -165,7 +165,7 @@ if (empty($_SESSION['admin'])) {
                                 <tr>';
 
                 //script untuk mencari data
-                $query = mysqli_query($config, "SELECT * FROM tbl_agenda WHERE (asal LIKE '%$cari%') OR (tempat LIKE '%$cari%') OR (isi LIKE '%$cari%') ORDER by id_agenda DESC LIMIT $curr, $limit");
+                $query = mysqli_query($config, "SELECT * FROM tbl_agenda WHERE (asal LIKE '%$cari%') OR (tempat LIKE '%$cari%') OR (isi LIKE '%$cari%') ORDER by tgl_agenda DESC, waktu_agenda DESC DESC LIMIT $curr, $limit");
                 if (mysqli_num_rows($query) > 0) {
                     $no = 1;
                     while ($row = mysqli_fetch_array($query)) {
@@ -339,7 +339,7 @@ if (empty($_SESSION['admin'])) {
                                     <tr>';
 
                 //script untuk menampilkan data
-                $query = mysqli_query($config, "SELECT * FROM tbl_agenda ORDER by id_agenda DESC LIMIT $curr, $limit");
+                $query = mysqli_query($config, "SELECT * FROM tbl_agenda ORDER by tgl_agenda DESC, waktu_agenda DESC LIMIT $curr, $limit");
                 if (mysqli_num_rows($query) > 0) {
                     $no = 1;
                     while ($row = mysqli_fetch_array($query)) {

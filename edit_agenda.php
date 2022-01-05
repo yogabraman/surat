@@ -35,6 +35,9 @@ if (empty($_SESSION['admin'])) {
                 $bidang = json_encode(array($_SESSION['nip']));
             }
 
+            // print_r(array($tgl_acara,$wkt_acara,$tempat,$dari,$isi,$id_surat,$id_user,$bidang));
+            // echo $_REQUEST['id_agenda'];
+
             //validasi input data
             if (!preg_match("/^[0-9.-]*$/", $tgl_acara)) {
                 $_SESSION['tgl_acara'] = 'Form Tanggal Surat hanya boleh mengandung angka dan minus(-)';
@@ -62,7 +65,8 @@ if (empty($_SESSION['admin'])) {
                             } else {
 
                                 //tombol simpan akan mengeksekusi script dibawah ini
-                                $id_agenda = mysqli_real_escape_string($config, $_REQUEST['id_agenda']);
+                                // $id_agenda = mysqli_real_escape_string($config, $_REQUEST['id_agenda']);
+                                $id_agenda = $_REQUEST['id_agenda'];
                                 $query = mysqli_query($config, "UPDATE tbl_agenda SET 
                                 asal='$dari',
                                 isi='$isi',
@@ -91,6 +95,7 @@ if (empty($_SESSION['admin'])) {
     } else {
 
         $id_agenda = mysqli_real_escape_string($config, $_REQUEST['id_agenda']);
+        // echo $id_agenda;
         $query = mysqli_query($config, "SELECT id_agenda, asal, isi, tgl_agenda, waktu_agenda, tempat, dispo, id_surat, id_user FROM tbl_agenda WHERE id_agenda='$id_agenda'");
         list($id_agenda, $asal, $isi, $tgl_agenda, $waktu_agenda, $tempat, $dispo, $id_surat, $id_user) = mysqli_fetch_array($query);
 
@@ -154,6 +159,7 @@ if (empty($_SESSION['admin'])) {
 
                     <!-- Row in form START -->
                     <div class="row">
+                        <input type="hidden" name="id_agenda" value="<?php echo $id_agenda; ?>">
                         <input type="hidden" name="id_surat" value="<?php echo $id_surat; ?>">
                         <div class="input-field col s6">
                             <i class="material-icons prefix md-prefix">date_range</i>
