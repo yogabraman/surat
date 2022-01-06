@@ -201,15 +201,12 @@
                         <table class="bordered" id="tbl" width="100%">
                             <thead class="blue lighten-4">
                                 <tr>
-                                    <th width="5%">No</th>
-                                    <th width="5%">Kode</th>
-                                    <th width="21%">Isi Ringkas</th>
-                                    <th width="18%">Asal Surat</th>
-                                    <th width="15%">Nomor Surat</th>
-                                    <th width="8%">Tanggal<br/> Surat</th>
-                                    <th width="10%">Pengelola</th>
-                                    <th width="8%">Tanggal <br/>Paraf</th>
-                                    <th width="10%">Keterangan</th>
+                                    <th width="3%">No</th>
+                                    <th width="24%">Asal Surat</th>
+                                    <th width="25%">Perihal</th>
+                                    <th width="15%">Tanggal<br/> Surat</th>
+                                    <th width="15%">Tanggal <br/>Paraf</th>
+                                    <th width="18%">Dispo</th>
                                 </tr>
                             </thead>
 
@@ -221,10 +218,8 @@
                                 while($row = mysqli_fetch_array($query)){
                                  echo '
                                         <td>'.$no++.'</td>
-                                        <td>'.$row['kode'].'</td>
-                                        <td>'.$row['isi'].'</td>
                                         <td>'.$row['asal_surat'].'</td>
-                                        <td>'.$row['no_surat'].'</td>';
+                                        <td>'.$row['isi'].'</td>';
 
                                         $y = substr($row['tgl_surat'],0,4);
                                         $m = substr($row['tgl_surat'],5,2);
@@ -288,18 +283,14 @@
 
                                         echo '
                                         <td>'.$d." ".$nm." ".$y.'</td>
-                                        <td>';
-
-                                        $id_user = $row['id_user'];
-                                        $query3 = mysqli_query($config, "SELECT nama FROM tbl_user WHERE id_user='$id_user'");
-                                        list($nama) = mysqli_fetch_array($query3);{
-                                            $row['id_user'] = ''.$nama.'';
-                                        }
-
-                                        echo ''.$row['id_user'].'</td>
-                                        <td>'.$d2." ".$nm2." ".$y2.'</td>
-                                        <td>'.$row['keterangan'].'';
-                                  echo '</td>
+                                        <td>'.$d2." ".$nm2." ".$y2.'</td>';
+                                        //get disposisi
+                                        $id_surat = $row['id_surat'];
+                                        $dispo = mysqli_query($config, "SELECT tujuan FROM tbl_disposisi WHERE id_surat=$id_surat")->fetch_row()[0];
+                                        $disp = json_decode($dispo);
+                                        
+                                  echo '<td>'. implode("<br>", $disp) .'</td>
+                                  </td>
                                 </tr>
                             </tbody>';
                                 }
