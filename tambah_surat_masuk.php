@@ -87,6 +87,7 @@ if (empty($_SESSION['admin'])) {
                                         $eks = strtolower(end($x));
                                         $ukuran = $_FILES['file']['size'];
                                         $target_dir = "upload/surat_masuk/";
+                                        $target_path = "sijanda/assets/suratmasuk/";
 
                                         //jika form file tidak kosong akan mengeksekusi script dibawah ini
                                         if ($file != "") {
@@ -101,6 +102,8 @@ if (empty($_SESSION['admin'])) {
                                                 if ($ukuran < 2500000) {
 
                                                     move_uploaded_file($_FILES['file']['tmp_name'], $target_dir . $nfile);
+                                                    //moved to destination, now copy
+                                                    copy($target_dir.$nfile, $target_path.$nfile);
 
                                                     //jika surat biasa
                                                     $tipe_surat = $_POST['tipe_surat'];

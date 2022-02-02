@@ -78,6 +78,7 @@
                                                 $eks = strtolower(end($x));
                                                 $ukuran = $_FILES['file']['size'];
                                                 $target_dir = "upload/surat_masuk/";
+                                                $target_path = "sijanda/assets/suratmasuk/";
 
                                             //jika form file tidak kosong akan mengeksekusi script dibawah ini
                                             if($file != ""){
@@ -98,8 +99,11 @@
                                                         //jika file tidak kosong akan mengeksekusi script dibawah ini
                                                         if(!empty($file)){
                                                             unlink($target_dir.$file);
+                                                            unlink($target_path.$file);
 
                                                             move_uploaded_file($_FILES['file']['tmp_name'], $target_dir.$nfile);
+                                                            //moved to destination, now copy
+                                                            copy($target_dir.$nfile, $target_path.$nfile);
 
                                                             $query = mysqli_query($config, "UPDATE tbl_surat_masuk SET no_agenda='$no_agenda',no_surat='$no_surat',asal_surat='$asal_surat',isi='$isi',tgl_surat='$tgl_surat',file='$nfile',keterangan='$keterangan',id_user='$id_user' WHERE id_surat='$id_surat'");
 
@@ -115,6 +119,8 @@
 
                                                             //jika file kosong akan mengeksekusi script dibawah ini
                                                             move_uploaded_file($_FILES['file']['tmp_name'], $target_dir.$nfile);
+                                                            //moved to destination, now copy
+                                                            copy($target_dir.$nfile, $target_path.$nfile);
 
                                                             //jika surat biasa
                                                             if($tipe_surat==0){
